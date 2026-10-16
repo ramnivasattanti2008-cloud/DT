@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SERC-RCS & CARI Live Demonstration Suite — Email Spam Detection Research</title>
+<style>
+  :root {
+    --navy: #0F172A;
+    --primary: #1B365D;
+    --accent: #0284C7;
+    --emerald: #047857;
+    --crimson: #B91C1C;
+    --amber: #B45309;
+    --bg: #F8FAFC;
+    --card: #FFFFFF;
+    --border: #E2E8F0;
+    --text: #1E293B;
+    --muted: #64748B;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, #0F172A 0%, #1B365D 100%);
+    color: #fff;
+    padding: 22px 32px;
+    border-bottom: 4px solid var(--accent);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 1360px;
+    margin: 0 auto;
+  }
+  .badge-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    color: #E0F2FE;
+  }
+  header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    max-width: 960px;
+    line-height: 1.3;
+  }
+  header p {
+    font-size: 13px;
+    color: #CBD5E1;
+    margin-top: 6px;
+  }
+  .nav-tabs {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .nav-inner {
+    max-width: 1360px;
+    margin: 0 auto;
+    display: flex;
+    gap: 6px;
+    padding: 0 24px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 13px 18px;
+    border: none;
+    background: transparent;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { color: var(--primary); }
+  .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--accent);
+    background: #F1F5F9;
+  }
+  main {
+    max-width: 1360px;
+    margin: 24px auto;
+    padding: 0 24px 48px;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--primary);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .kpi-card.emerald { border-top-color: var(--emerald); }
+  .kpi-card.crimson { border-top-color: var(--crimson); }
+  .kpi-card.amber { border-top-color: var(--amber); }
+  .kpi-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+  .kpi-val { font-size: 25px; font-weight: 800; color: var(--navy); margin: 4px 0; }
+  .kpi-sub { font-size: 12px; color: var(--muted); }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card h2 {
+    font-size: 16.5px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .card p.desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .preset-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: #F8FAFC;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn:hover { background: #E2E8F0; }
+  .btn.primary {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+  .btn.primary:hover { background: #0F172A; }
+  textarea {
+    width: 100%;
+    min-height: 92px;
+    padding: 12px;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.8px;
+  }
+  th {
+    background: var(--primary);
+    color: #fff;
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:nth-child(even) td { background: #F8FAFC; }
+  .pill {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .pill.pass { background: #DCFCE7; color: #166534; }
+  .pill.fail { background: #FEE2E2; color: #991B1B; }
+  .pill.warn { background: #FEF3C7; color: #92400E; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 12px 0 18px;
+    padding: 12px 16px;
+    background: #F1F5F9;
+    border-radius: 8px;
+  }
+  .serc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .serc-row select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #CBD5E1;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="badge-bar">
+        <span class="badge">Live Working Demonstration</span>
+        <span class="badge">Scopus Q3/Q4 Research Artifact</span>
+        <span class="badge">N = 6,000 Multi-Epoch Corpus</span>
+        <span class="badge">Cohen's κ = 0.8672 (p &lt; 0.0001)</span>
+      </div>
+      <h1>Beyond Accuracy: The SERC-RCS &amp; CARI Evaluation Framework for Machine Learning-Based Email Spam Detection</h1>
+      <p>Authors: <strong>Ramnivas Attanti</strong>, <strong>Shreya P</strong>, and <strong>Md Nadeem Sarwar*</strong> &nbsp;|&nbsp; Dept. of Computer Science and Business Systems, Jain (Deemed-to-be-University), Bengaluru</p>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <div class="nav-inner">
+    <button class="tab-btn active" onclick="switchTab('tab-sandbox', this)">1. Live Email Classifier Sandbox (Protocol A vs. B)</button>
+    <button class="tab-btn" onclick="switchTab('tab-benchmark', this)">2. Controlled Benchmark &amp; Cost Ratio (TCR) Explorer</button>
+    <button class="tab-btn" onclick="switchTab('tab-ablation', this)">3. 5-Stage Stepwise Leakage Ablation (A0 → B)</button>
+    <button class="tab-btn" onclick="switchTab('tab-audit', this)">4. 20-Study SERC Audit Matrix &amp; Live RCS/CARI Calculator</button>
+  </div>
+</nav>
+
+<main>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Multi-Epoch Benchmark Corpus</div>
+      <div class="kpi-val">6,000 Emails</div>
+      <div class="kpi-sub">3,600 Ham (60%) &bull; 2,400 Spam (40%) &bull; 480 Near-Dups (8%)</div>
+    </div>
+    <div class="kpi-card emerald">
+      <div class="kpi-label">Double-Blind SERC Rubric Agreement</div>
+      <div class="kpi-val">&kappa; = 0.8672</div>
+      <div class="kpi-sub">91.5% Raw Agreement (183/200) &bull; Weighted &kappa;<sub>w</sub> = 0.9071</div>
+    </div>
+    <div class="kpi-card crimson">
+      <div class="kpi-label">Historical Transparency Drop</div>
+      <div class="kpi-val">77.1% &rarr; 49.2%</div>
+      <div class="kpi-sub">Foundational (1999–2009) vs. Contemporary (2016–2023), p = 0.0023</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Protocol B False Positive Reduction</div>
+      <div class="kpi-val">&gt;10&times; Lower FPR</div>
+      <div class="kpi-sub">FPR compressed from 3.33%–4.31% down to 0.15%–0.29% (&le;0.50% limit)</div>
+    </div>
+  </div>
+
+  <!-- TAB 1: LIVE EMAIL SANDBOX -->
+  <div id="tab-sandbox" class="tab-panel active">
+    <div class="card">
+      <h2>Live Multi-Model Email Classification &amp; Threshold Calibration Sandbox</h2>
+      <p class="desc">Test how the four trained classifiers score incoming messages in real time under <strong>Protocol A (Standard Flawed Literature Default, &tau; = 0.50)</strong> versus <strong>Protocol B (SERC-Compliant Cost-Calibrated Threshold, &tau;*)</strong>. Notice how Protocol A falsely blocks legitimate commercial <em>Hard Ham</em> newsletters!</p>
+      <div class="preset-bar">
+        <button class="btn primary" onclick="loadSample(0)">Load Sample 1: Legitimate Executive Ham</button>
+        <button class="btn primary" onclick="loadSample(1)">Load Sample 2: Tricky Hard-Ham Newsletter (Shows Protocol A False Positive!)</button>
+        <button class="btn primary" onclick="loadSample(2)">Load Sample 3: Financial / Pharma Campaign Spam</button>
+        <button class="btn primary" onclick="loadSample(3)">Load Sample 4: Q4 Concept-Drift Cloud Spear-Phishing</button>
+      </div>
+      <textarea id="emailInput" oninput="classifyLiveEmail()"></textarea>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Classifier Architecture</th>
+              <th>Predicted P(Spam | x)</th>
+              <th>Protocol A Default (&tau; = 0.50)</th>
+              <th>SERC Calibrated Threshold (&tau;*)</th>
+              <th>Protocol B Decision (&tau; = &tau;*)</th>
+              <th>Operational Diagnostic</th>
+            </tr>
+          </thead>
+          <tbody id="liveClassifierBody"></tbody>
+        </table>
+      </div>
+      <div id="tokenWeightsBox" style="margin-top:14px; font-size:12.5px; color:var(--muted);"></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: BENCHMARK & COST EXPLORER -->
+  <div id="tab-benchmark" class="tab-panel">
+    <div class="card">
+      <h2>Table 6 Verification: Protocol A (Flawed / Leaky) vs. Protocol B (SERC-Compliant)</h2>
+      <p class="desc">All confusion matrix counts (TP, TN, FP, FN) and cost-sensitive metrics below are generated directly from executing <code>src/protocol_benchmark.py</code> on the 6,000-email multi-epoch dataset (<code>N_test = 1,200</code> in Protocol A; <code>N_test = 1,104</code> deduplicated chronological test emails in Protocol B).</p>
+      <div class="slider-row">
+        <label style="font-weight:700; font-size:13px;">Interactive False-Positive Cost Ratio (&lambda;): <span id="lambdaVal" style="color:var(--accent);">99</span></label>
+        <input type="range" id="lambdaSlider" min="1" max="250" value="99" style="width:260px;" oninput="updateBenchmarkTable()">
+        <span style="font-size:12px; color:var(--muted);">Adjust &lambda; to recalculate Total Cost Ratio TCR(&lambda;) = (TP + FN) / (&lambda;&middot;FP + FN) and Weighted Accuracy WAcc(&lambda;) live!</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Classifier</th>
+              <th>Evaluation Protocol</th>
+              <th>&tau;</th>
+              <th>TP</th>
+              <th>TN</th>
+              <th>FP</th>
+              <th>FN</th>
+              <th>Acc (%)</th>
+              <th>Prec (%)</th>
+              <th>Rec (%)</th>
+              <th>F1 (%)</th>
+              <th>MCC</th>
+              <th>ROC-AUC</th>
+              <th>FPR (%)</th>
+              <th id="tcrHeader">TCR (&lambda;=99)</th>
+              <th>CARI</th>
+            </tr>
+          </thead>
+          <tbody id="benchmarkTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: 5-STAGE ABLATION -->
+  <div id="tab-ablation" class="tab-panel">
+    <div class="card">
+      <h2>Table 7 Verification: 5-Stage Stepwise Ablation Study (Deconstructing F1 Inflation &amp; Leakage)</h2>
+      <p class="desc">Isolates the exact empirical impact of each methodological correction: <strong>A0</strong> (Flawed Baseline) &rarr; <strong>A1</strong> (+Pre-Split Jaccard Deduplication, 480 duplicates removed) &rarr; <strong>A2</strong> (+Train-Only TF-IDF Isolation) &rarr; <strong>A3</strong> (+Strict Chronological 80:20 Split exposing Q4 drift at &tau;=0.50) &rarr; <strong>B</strong> (+Cost-Sensitive Threshold Calibration &tau;*).</p>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Classifier</th>
+              <th>Ablation Stage</th>
+              <th>&tau;</th>
+              <th>TP</th>
+              <th>TN</th>
+              <th>FP</th>
+              <th>FN</th>
+              <th>Accuracy (%)</th>
+              <th>F1-Score (%)</th>
+              <th>MCC</th>
+              <th>FPR (%)</th>
+              <th>TCR (&lambda;=99)</th>
+              <th>CARI Score</th>
+            </tr>
+          </thead>
+          <tbody id="ablationTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: 20-STUDY AUDIT & CALCULATOR -->
+  <div id="tab-audit" class="tab-panel">
+    <div class="grid-2">
+      <div class="card">
+        <h2>Interactive SERC-RCS &amp; CARI Calculator</h2>
+        <p class="desc">Audit any spam detection paper across the 10 SERC criteria and compute its live <strong>Reporting Completeness Score (RCS)</strong>, <strong>Quality Tier</strong>, and <strong>Cost-Adjusted Reproducibility Index (CARI)</strong>.</p>
+        <div id="sercInputsContainer"></div>
+        <div style="display:flex; gap:12px; margin-top:12px;">
+          <div style="flex:1;">
+            <label style="font-size:12px; font-weight:700;">Reported F1-Score (0–1):</label>
+            <input type="number" id="calcF1" value="0.960" step="0.01" min="0" max="1" style="width:100%; padding:6px;" oninput="recalcSERC()">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px; font-weight:700;">Reported FPR (or 0.05 if omitted):</label>
+            <input type="number" id="calcFPR" value="0.038" step="0.005" min="0" max="1" style="width:100%; padding:6px;" oninput="recalcSERC()">
+          </div>
+        </div>
+        <div id="sercResultBox" style="margin-top:14px; padding:14px; border-radius:8px; background:#F1F5F9; font-weight:700;"></div>
+      </div>
+
+      <div class="card">
+        <h2>Double-Blind Inter-Rater Reliability Summary</h2>
+        <p class="desc">Statistical verification across 20 primary studies &times; 10 criteria = 200 paired evaluations (Rater 1: R.A., Rater 2: S.P., Consensus: M.N.S.).</p>
+        <table>
+          <thead>
+            <tr><th>Psychometric / Statistical Metric</th><th>Executed Value</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Total Audited Criterion Pairs (N)</td><td><strong>200 (20 studies &times; 10 criteria)</strong></td></tr>
+            <tr><td>Exact Raw Inter-Rater Agreement</td><td><strong>91.50% (183 / 200 pairs)</strong></td></tr>
+            <tr><td>Unweighted Cohen's Kappa (&kappa;)</td><td><strong>0.8672 (SE = 0.0308, z = 28.15, p &lt; 0.0001)</strong></td></tr>
+            <tr><td>95% Confidence Interval for &kappa;</td><td><strong>[0.8068, 0.9276] (Almost Perfect Agreement)</strong></td></tr>
+            <tr><td>Linear Weighted Cohen's Kappa (&kappa;<sub>w</sub>)</td><td><strong>0.9071</strong></td></tr>
+            <tr><td>Foundational Era Mean RCS (1999–2009, n=7)</td><td><strong>77.14% &plusmn; 15.77% (Tier B+)</strong></td></tr>
+            <tr><td>Contemporary Era Mean RCS (2016–2023, n=12)</td><td><strong>49.17% &plusmn; 12.58% (Tier C)</strong></td></tr>
+            <tr><td>Welch's Two-Sample t-Test (Era Regression)</td><td><strong>t = 4.0073, p = 0.00226 (Statistically Significant)</strong></td></tr>
+            <tr><td>Mann-Whitney U Test (Era Regression)</td><td><strong>U = 77.5, p = 0.00294</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Table 5 Verification: Longitudinal SERC Audit Matrix (20 Primary Studies, 1999–2023)</h2>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Study</th><th>Era</th><th>Dataset</th>
+              <th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th><th>C6</th><th>C7</th><th>C8</th><th>C9</th><th>C10</th>
+              <th>RCS (%)</th><th>Quality Tier</th>
+            </tr>
+          </thead>
+          <tbody id="auditMatrixBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const PAYLOAD = {"audit_stats": {"total_studies": 20, "total_pairs": 200, "exact_agreement_count": 183, "exact_agreement_pct": 91.5, "p_e": 0.3599, "cohens_kappa_unweighted": 0.8672, "cohens_kappa_weighted": 0.9071, "se_kappa": 0.0308, "ci_95": [0.8068, 0.9276], "z_stat": 28.15, "p_value_kappa": 0.0, "confusion_matrix_raters": [[55, 0, 0], [8, 39, 8], [0, 1, 89]], "foundational_mean_rcs": 77.14, "foundational_sd_rcs": 15.77, "contemporary_mean_rcs": 49.17, "contemporary_sd_rcs": 12.58, "overall_mean_rcs": 58.75, "overall_sd_rcs": 19.05, "welch_t_stat": 4.0073, "welch_p_val": 0.002262, "mann_whitney_u": 77.5, "mann_whitney_p_val": 0.002942, "criterion_means_all": {"C1": 95.0, "C2": 80.0, "C3": 92.5, "C4": 65.0, "C5": 90.0, "C6": 50.0, "C7": 27.5, "C8": 15.0, "C9": 27.5, "C10": 45.0}, "criterion_means_foundational": {"C1": 100.0, "C2": 92.86, "C3": 92.86, "C4": 85.71, "C5": 85.71, "C6": 100.0, "C7": 78.57, "C8": 28.57, "C9": 35.71, "C10": 71.43}, "criterion_means_contemporary": {"C1": 91.67, "C2": 75.0, "C3": 95.83, "C4": 54.17, "C5": 91.67, "C6": 20.83, "C7": 0.0, "C8": 8.33, "C9": 20.83, "C10": 33.33}}, "studies": [{"Study_ID": 1, "Study": "Drucker et al. (1999)", "Era": "Foundational (1999-2009)", "Primary_Dataset": "Custom AT&T Corpus", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 1.0, "C5": 0.5, "C6": 1.0, "C7": 0.5, "C8": 0.0, "C9": 0.0, "C10": 0.5, "TPE": 6.5, "NAC": 10, "RCS_Pct": 65.0, "Tier": "Tier B"}, {"Study_ID": 2, "Study": "Androutsopoulos et al. (2000)", "Era": "Foundational (1999-2009)", "Primary_Dataset": "Ling-Spam (2,893)", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 1.0, "C5": 1.0, "C6": 1.0, "C7": 1.0, "C8": 0.0, "C9": 0.5, "C10": 1.0, "TPE": 8.5, "NAC": 10, "RCS_Pct": 85.0, "Tier": "Tier A"}, {"Study_ID": 3, "Study": "Carreras & Marquez (2001)", "Era": "Foundational (1999-2009)", "Primary_Dataset": "PU1 & Ling-Spam", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 1.0, "C5": 1.0, "C6": 1.0, "C7": 1.0, "C8": 0.0, "C9": 0.5, "C10": 0.5, "TPE": 8.0, "NAC": 10, "RCS_Pct": 80.0, "Tier": "Tier A"}, {"Study_ID": 4, "Study": "Tretyakov (2004)", "Era": "Foundational (1999-2009)", "Primary_Dataset": "PU1 & Ling-Spam", "C1": 1.0, "C2": 1.0, "C3": 0.5, "C4": 0.5, "C5": 0.5, "C6": 1.0, "C7": 0.5, "C8": 0.0, "C9": 0.0, "C10": 0.5, "TPE": 5.5, "NAC": 10, "RCS_Pct": 55.0, "Tier": "Tier C"}, {"Study_ID": 5, "Study": "Metsis et al. (2006)", "Era": "Foundational (1999-2009)", "Primary_Dataset": "Enron-Spam (33,716)", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 1.0, "C5": 1.0, "C6": 1.0, "C7": 1.0, "C8": 1.0, "C9": 0.5, "C10": 1.0, "TPE": 9.5, "NAC": 10, "RCS_Pct": 95.0, "Tier": "Tier A"}, {"Study_ID": 6, "Study": "Cormack & Lynam (2007)", "Era": "Foundational (1999-2009)", "Primary_Dataset": "TREC 2005-2006", "C1": 1.0, "C2": 0.5, "C3": 1.0, "C4": 1.0, "C5": 1.0, "C6": 1.0, "C7": 1.0, "C8": 1.0, "C9": 1.0, "C10": 1.0, "TPE": 9.5, "NAC": 10, "RCS_Pct": 95.0, "Tier": "Tier A"}, {"Study_ID": 7, "Study": "DeBarr & Wechsler (2009)", "Era": "Foundational (1999-2009)", "Primary_Dataset": "SpamAssassin Public", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 0.5, "C5": 1.0, "C6": 1.0, "C7": 0.5, "C8": 0.0, "C9": 0.0, "C10": 0.5, "TPE": 6.5, "NAC": 10, "RCS_Pct": 65.0, "Tier": "Tier B"}, {"Study_ID": 8, "Study": "Awad & Elseuofi (2011)", "Era": "Transitional (2011)", "Primary_Dataset": "UCI Spambase (4,601)", "C1": 1.0, "C2": 0.5, "C3": 0.5, "C4": 0.5, "C5": 1.0, "C6": 0.5, "C7": 0.0, "C8": 0.0, "C9": 0.5, "C10": 0.0, "TPE": 4.5, "NAC": 10, "RCS_Pct": 45.0, "Tier": "Tier C"}, {"Study_ID": 9, "Study": "Wijaya & Bisri (2016)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "UCI Spambase (4,601)", "C1": 1.0, "C2": 0.5, "C3": 1.0, "C4": 0.5, "C5": 0.5, "C6": 0.0, "C7": 0.0, "C8": 0.0, "C9": 0.0, "C10": 0.5, "TPE": 4.0, "NAC": 10, "RCS_Pct": 40.0, "Tier": "Tier C"}, {"Study_ID": 10, "Study": "Rusland et al. (2017)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "Spambase & SpamData", "C1": 1.0, "C2": 0.5, "C3": 1.0, "C4": 0.0, "C5": 1.0, "C6": 0.5, "C7": 0.0, "C8": 0.0, "C9": 0.5, "C10": 0.0, "TPE": 4.5, "NAC": 10, "RCS_Pct": 45.0, "Tier": "Tier C"}, {"Study_ID": 11, "Study": "Agarwal & Kumar (2018)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "Ling-Spam Corpus", "C1": 1.0, "C2": 1.0, "C3": 0.5, "C4": 0.5, "C5": 1.0, "C6": 0.0, "C7": 0.0, "C8": 0.0, "C9": 0.0, "C10": 0.0, "TPE": 4.0, "NAC": 10, "RCS_Pct": 40.0, "Tier": "Tier C"}, {"Study_ID": 12, "Study": "Olatunji (2019)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "UCI Spambase (4,601)", "C1": 1.0, "C2": 0.0, "C3": 1.0, "C4": 1.0, "C5": 0.5, "C6": 0.0, "C7": 0.0, "C8": 0.0, "C9": 0.0, "C10": 0.5, "TPE": 4.0, "NAC": 10, "RCS_Pct": 40.0, "Tier": "Tier C"}, {"Study_ID": 13, "Study": "Dedeturk & Akay (2020)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "Spambase & CSDMC2010", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 1.0, "C5": 1.0, "C6": 1.0, "C7": 0.0, "C8": 0.5, "C9": 0.5, "C10": 0.5, "TPE": 7.5, "NAC": 10, "RCS_Pct": 75.0, "Tier": "Tier B"}, {"Study_ID": 14, "Study": "Gibson et al. (2020)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "SpamAssassin & Enron", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 0.5, "C5": 1.0, "C6": 0.0, "C7": 0.0, "C8": 0.0, "C9": 0.5, "C10": 0.5, "TPE": 5.5, "NAC": 10, "RCS_Pct": 55.0, "Tier": "Tier C"}, {"Study_ID": 15, "Study": "Kumar et al. (2020)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "CSV Spam Dataset", "C1": 0.5, "C2": 0.5, "C3": 1.0, "C4": 0.5, "C5": 1.0, "C6": 0.0, "C7": 0.0, "C8": 0.0, "C9": 0.0, "C10": 0.0, "TPE": 3.5, "NAC": 10, "RCS_Pct": 35.0, "Tier": "Tier D"}, {"Study_ID": 16, "Study": "Siddique et al. (2021)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "Urdu Spam (5,000)", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 0.5, "C5": 1.0, "C6": 0.0, "C7": 0.0, "C8": 0.0, "C9": 0.0, "C10": 0.5, "TPE": 5.0, "NAC": 10, "RCS_Pct": 50.0, "Tier": "Tier C"}, {"Study_ID": 17, "Study": "Kontsewaya et al. (2021)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "Email Spam Corpus", "C1": 0.5, "C2": 1.0, "C3": 1.0, "C4": 0.0, "C5": 1.0, "C6": 0.0, "C7": 0.0, "C8": 0.0, "C9": 0.0, "C10": 0.0, "TPE": 3.5, "NAC": 10, "RCS_Pct": 35.0, "Tier": "Tier D"}, {"Study_ID": 18, "Study": "AbdulNabi & Yaseen (2021)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "Spambase & SpamFilter", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 1.0, "C5": 1.0, "C6": 0.0, "C7": 0.0, "C8": 0.5, "C9": 0.5, "C10": 0.5, "TPE": 6.5, "NAC": 10, "RCS_Pct": 65.0, "Tier": "Tier B"}, {"Study_ID": 19, "Study": "Nayak et al. (2022)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "SpamAssassin & Phish", "C1": 1.0, "C2": 1.0, "C3": 1.0, "C4": 0.5, "C5": 1.0, "C6": 0.5, "C7": 0.0, "C8": 0.0, "C9": 0.5, "C10": 0.5, "TPE": 6.0, "NAC": 10, "RCS_Pct": 60.0, "Tier": "Tier B"}, {"Study_ID": 20, "Study": "Al-zoubi et al. / Word-Freq (2023)", "Era": "Contemporary (2016-2023)", "Primary_Dataset": "UCI Spambase (4,601)", "C1": 1.0, "C2": 0.5, "C3": 1.0, "C4": 0.5, "C5": 1.0, "C6": 0.5, "C7": 0.0, "C8": 0.0, "C9": 0.0, "C10": 0.5, "TPE": 5.0, "NAC": 10, "RCS_Pct": 50.0, "Tier": "Tier C"}], "benchmark": {"main_comparison": [{"tau": 0.5, "TP": 480, "TN": 689, "FP": 31, "FN": 0, "Accuracy_Pct": 97.42, "Precision_Pct": 93.93, "Recall_Pct": 100.0, "F1_Pct": 96.87, "MCC": 0.9481, "ROC_AUC": 0.9986, "FPR_Pct": 4.31, "FNR_Pct": 0.0, "WAcc_99_Pct": 95.72, "TCR_9": 1.72, "TCR_99": 0.16, "TCR_999": 0.02, "CARI": 0.6197, "Classifier": "Multinomial Naive Bayes", "Stage": "A0: Protocol A (Flawed Baseline)", "Protocol": "Protocol A (Flawed / Leaky)"}, {"tau": 0.9196, "TP": 360, "TN": 680, "FP": 2, "FN": 62, "Accuracy_Pct": 94.2, "Precision_Pct": 99.45, "Recall_Pct": 85.31, "F1_Pct": 91.84, "MCC": 0.88, "ROC_AUC": 0.9938, "FPR_Pct": 0.29, "FNR_Pct": 14.69, "WAcc_99_Pct": 99.62, "TCR_9": 5.28, "TCR_99": 1.62, "TCR_999": 0.2, "CARI": 0.913, "Classifier": "Multinomial Naive Bayes", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)", "Protocol": "Protocol B (SERC-Compliant)"}, {"tau": 0.5, "TP": 454, "TN": 696, "FP": 24, "FN": 26, "Accuracy_Pct": 95.83, "Precision_Pct": 94.98, "Recall_Pct": 94.58, "F1_Pct": 94.78, "MCC": 0.9131, "ROC_AUC": 0.997, "FPR_Pct": 3.33, "FNR_Pct": 5.42, "WAcc_99_Pct": 96.65, "TCR_9": 1.98, "TCR_99": 0.2, "TCR_999": 0.02, "CARI": 0.6192, "Classifier": "Linear SVM (Platt Scaled)", "Stage": "A0: Protocol A (Flawed Baseline)", "Protocol": "Protocol A (Flawed / Leaky)"}, {"tau": 0.7912, "TP": 345, "TN": 681, "FP": 1, "FN": 77, "Accuracy_Pct": 92.93, "Precision_Pct": 99.71, "Recall_Pct": 81.75, "F1_Pct": 89.84, "MCC": 0.8549, "ROC_AUC": 0.9936, "FPR_Pct": 0.15, "FNR_Pct": 18.25, "WAcc_99_Pct": 99.74, "TCR_9": 4.91, "TCR_99": 2.4, "TCR_999": 0.39, "CARI": 0.8958, "Classifier": "Linear SVM (Platt Scaled)", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)", "Protocol": "Protocol B (SERC-Compliant)"}, {"tau": 0.5, "TP": 445, "TN": 693, "FP": 27, "FN": 35, "Accuracy_Pct": 94.83, "Precision_Pct": 94.28, "Recall_Pct": 92.71, "F1_Pct": 93.49, "MCC": 0.8921, "ROC_AUC": 0.9959, "FPR_Pct": 3.75, "FNR_Pct": 7.29, "WAcc_99_Pct": 96.23, "TCR_9": 1.73, "TCR_99": 0.18, "TCR_999": 0.02, "CARI": 0.6053, "Classifier": "Random Forest (B=100)", "Stage": "A0: Protocol A (Flawed Baseline)", "Protocol": "Protocol A (Flawed / Leaky)"}, {"tau": 0.8564, "TP": 353, "TN": 680, "FP": 2, "FN": 69, "Accuracy_Pct": 93.57, "Precision_Pct": 99.44, "Recall_Pct": 83.65, "F1_Pct": 90.86, "MCC": 0.8672, "ROC_AUC": 0.9935, "FPR_Pct": 0.29, "FNR_Pct": 16.35, "WAcc_99_Pct": 99.61, "TCR_9": 4.85, "TCR_99": 1.58, "TCR_999": 0.2, "CARI": 0.9033, "Classifier": "Random Forest (B=100)", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)", "Protocol": "Protocol B (SERC-Compliant)"}, {"tau": 0.5, "TP": 454, "TN": 692, "FP": 28, "FN": 26, "Accuracy_Pct": 95.5, "Precision_Pct": 94.19, "Recall_Pct": 94.58, "F1_Pct": 94.39, "MCC": 0.9063, "ROC_AUC": 0.9949, "FPR_Pct": 3.89, "FNR_Pct": 5.42, "WAcc_99_Pct": 96.1, "TCR_9": 1.73, "TCR_99": 0.17, "TCR_999": 0.02, "CARI": 0.6093, "Classifier": "Logistic Regression (L2)", "Stage": "A0: Protocol A (Flawed Baseline)", "Protocol": "Protocol A (Flawed / Leaky)"}, {"tau": 0.667, "TP": 351, "TN": 681, "FP": 1, "FN": 71, "Accuracy_Pct": 93.48, "Precision_Pct": 99.72, "Recall_Pct": 83.18, "F1_Pct": 90.7, "MCC": 0.8658, "ROC_AUC": 0.9936, "FPR_Pct": 0.15, "FNR_Pct": 16.82, "WAcc_99_Pct": 99.75, "TCR_9": 5.28, "TCR_99": 2.48, "TCR_999": 0.39, "CARI": 0.9043, "Classifier": "Logistic Regression (L2)", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)", "Protocol": "Protocol B (SERC-Compliant)"}], "ablation_stages": [{"tau": 0.5, "TP": 480, "TN": 689, "FP": 31, "FN": 0, "Accuracy_Pct": 97.42, "Precision_Pct": 93.93, "Recall_Pct": 100.0, "F1_Pct": 96.87, "MCC": 0.9481, "ROC_AUC": 0.9986, "FPR_Pct": 4.31, "FNR_Pct": 0.0, "WAcc_99_Pct": 95.72, "TCR_9": 1.72, "TCR_99": 0.16, "TCR_999": 0.02, "CARI": 0.6197, "Classifier": "Multinomial Naive Bayes", "Stage": "A0: Protocol A (Flawed Baseline)"}, {"tau": 0.5, "TP": 423, "TN": 648, "FP": 34, "FN": 0, "Accuracy_Pct": 96.92, "Precision_Pct": 92.56, "Recall_Pct": 100.0, "F1_Pct": 96.14, "MCC": 0.9378, "ROC_AUC": 0.9982, "FPR_Pct": 4.99, "FNR_Pct": 0.0, "WAcc_99_Pct": 95.05, "TCR_9": 1.38, "TCR_99": 0.13, "TCR_999": 0.01, "CARI": 0.6708, "Classifier": "Multinomial Naive Bayes", "Stage": "A1: +Pre-Split Deduplication"}, {"tau": 0.5, "TP": 401, "TN": 646, "FP": 36, "FN": 22, "Accuracy_Pct": 94.75, "Precision_Pct": 91.76, "Recall_Pct": 94.8, "F1_Pct": 93.26, "MCC": 0.8899, "ROC_AUC": 0.9961, "FPR_Pct": 5.28, "FNR_Pct": 5.2, "WAcc_99_Pct": 94.72, "TCR_9": 1.22, "TCR_99": 0.12, "TCR_999": 0.01, "CARI": 0.709, "Classifier": "Multinomial Naive Bayes", "Stage": "A2: +Train-Only TF-IDF Fit"}, {"tau": 0.5, "TP": 383, "TN": 651, "FP": 31, "FN": 39, "Accuracy_Pct": 93.66, "Precision_Pct": 92.51, "Recall_Pct": 90.76, "F1_Pct": 91.63, "MCC": 0.8654, "ROC_AUC": 0.9938, "FPR_Pct": 4.55, "FNR_Pct": 9.24, "WAcc_99_Pct": 95.43, "TCR_9": 1.33, "TCR_99": 0.14, "TCR_999": 0.01, "CARI": 0.7705, "Classifier": "Multinomial Naive Bayes", "Stage": "A3: +Chronological Split (tau=0.50)"}, {"tau": 0.9196, "TP": 360, "TN": 680, "FP": 2, "FN": 62, "Accuracy_Pct": 94.2, "Precision_Pct": 99.45, "Recall_Pct": 85.31, "F1_Pct": 91.84, "MCC": 0.88, "ROC_AUC": 0.9938, "FPR_Pct": 0.29, "FNR_Pct": 14.69, "WAcc_99_Pct": 99.62, "TCR_9": 5.28, "TCR_99": 1.62, "TCR_999": 0.2, "CARI": 0.913, "Classifier": "Multinomial Naive Bayes", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)"}, {"tau": 0.5, "TP": 454, "TN": 696, "FP": 24, "FN": 26, "Accuracy_Pct": 95.83, "Precision_Pct": 94.98, "Recall_Pct": 94.58, "F1_Pct": 94.78, "MCC": 0.9131, "ROC_AUC": 0.997, "FPR_Pct": 3.33, "FNR_Pct": 5.42, "WAcc_99_Pct": 96.65, "TCR_9": 1.98, "TCR_99": 0.2, "TCR_999": 0.02, "CARI": 0.6192, "Classifier": "Linear SVM (Platt Scaled)", "Stage": "A0: Protocol A (Flawed Baseline)"}, {"tau": 0.5, "TP": 396, "TN": 658, "FP": 24, "FN": 27, "Accuracy_Pct": 95.38, "Precision_Pct": 94.29, "Recall_Pct": 93.62, "F1_Pct": 93.95, "MCC": 0.9022, "ROC_AUC": 0.9969, "FPR_Pct": 3.52, "FNR_Pct": 6.38, "WAcc_99_Pct": 96.46, "TCR_9": 1.74, "TCR_99": 0.18, "TCR_999": 0.02, "CARI": 0.6769, "Classifier": "Linear SVM (Platt Scaled)", "Stage": "A1: +Pre-Split Deduplication"}, {"tau": 0.5, "TP": 391, "TN": 655, "FP": 27, "FN": 32, "Accuracy_Pct": 94.66, "Precision_Pct": 93.54, "Recall_Pct": 92.43, "F1_Pct": 92.98, "MCC": 0.8868, "ROC_AUC": 0.9956, "FPR_Pct": 3.96, "FNR_Pct": 7.57, "WAcc_99_Pct": 96.02, "TCR_9": 1.54, "TCR_99": 0.16, "TCR_999": 0.02, "CARI": 0.7278, "Classifier": "Linear SVM (Platt Scaled)", "Stage": "A2: +Train-Only TF-IDF Fit"}, {"tau": 0.5, "TP": 375, "TN": 653, "FP": 29, "FN": 47, "Accuracy_Pct": 93.12, "Precision_Pct": 92.82, "Recall_Pct": 88.86, "F1_Pct": 90.8, "MCC": 0.8536, "ROC_AUC": 0.9936, "FPR_Pct": 4.25, "FNR_Pct": 11.14, "WAcc_99_Pct": 95.71, "TCR_9": 1.37, "TCR_99": 0.14, "TCR_999": 0.01, "CARI": 0.7685, "Classifier": "Linear SVM (Platt Scaled)", "Stage": "A3: +Chronological Split (tau=0.50)"}, {"tau": 0.7912, "TP": 345, "TN": 681, "FP": 1, "FN": 77, "Accuracy_Pct": 92.93, "Precision_Pct": 99.71, "Recall_Pct": 81.75, "F1_Pct": 89.84, "MCC": 0.8549, "ROC_AUC": 0.9936, "FPR_Pct": 0.15, "FNR_Pct": 18.25, "WAcc_99_Pct": 99.74, "TCR_9": 4.91, "TCR_99": 2.4, "TCR_999": 0.39, "CARI": 0.8958, "Classifier": "Linear SVM (Platt Scaled)", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)"}, {"tau": 0.5, "TP": 445, "TN": 693, "FP": 27, "FN": 35, "Accuracy_Pct": 94.83, "Precision_Pct": 94.28, "Recall_Pct": 92.71, "F1_Pct": 93.49, "MCC": 0.8921, "ROC_AUC": 0.9959, "FPR_Pct": 3.75, "FNR_Pct": 7.29, "WAcc_99_Pct": 96.23, "TCR_9": 1.73, "TCR_99": 0.18, "TCR_999": 0.02, "CARI": 0.6053, "Classifier": "Random Forest (B=100)", "Stage": "A0: Protocol A (Flawed Baseline)"}, {"tau": 0.5, "TP": 393, "TN": 654, "FP": 28, "FN": 30, "Accuracy_Pct": 94.75, "Precision_Pct": 93.35, "Recall_Pct": 92.91, "F1_Pct": 93.13, "MCC": 0.8888, "ROC_AUC": 0.9958, "FPR_Pct": 4.11, "FNR_Pct": 7.09, "WAcc_99_Pct": 95.88, "TCR_9": 1.5, "TCR_99": 0.15, "TCR_999": 0.02, "CARI": 0.6625, "Classifier": "Random Forest (B=100)", "Stage": "A1: +Pre-Split Deduplication"}, {"tau": 0.5, "TP": 392, "TN": 653, "FP": 29, "FN": 31, "Accuracy_Pct": 94.57, "Precision_Pct": 93.11, "Recall_Pct": 92.67, "F1_Pct": 92.89, "MCC": 0.885, "ROC_AUC": 0.9955, "FPR_Pct": 4.25, "FNR_Pct": 7.33, "WAcc_99_Pct": 95.73, "TCR_9": 1.45, "TCR_99": 0.15, "TCR_999": 0.01, "CARI": 0.7224, "Classifier": "Random Forest (B=100)", "Stage": "A2: +Train-Only TF-IDF Fit"}, {"tau": 0.5, "TP": 375, "TN": 652, "FP": 30, "FN": 47, "Accuracy_Pct": 93.03, "Precision_Pct": 92.59, "Recall_Pct": 88.86, "F1_Pct": 90.69, "MCC": 0.8516, "ROC_AUC": 0.9935, "FPR_Pct": 4.4, "FNR_Pct": 11.14, "WAcc_99_Pct": 95.56, "TCR_9": 1.33, "TCR_99": 0.14, "TCR_999": 0.01, "CARI": 0.7651, "Classifier": "Random Forest (B=100)", "Stage": "A3: +Chronological Split (tau=0.50)"}, {"tau": 0.8564, "TP": 353, "TN": 680, "FP": 2, "FN": 69, "Accuracy_Pct": 93.57, "Precision_Pct": 99.44, "Recall_Pct": 83.65, "F1_Pct": 90.86, "MCC": 0.8672, "ROC_AUC": 0.9935, "FPR_Pct": 0.29, "FNR_Pct": 16.35, "WAcc_99_Pct": 99.61, "TCR_9": 4.85, "TCR_99": 1.58, "TCR_999": 0.2, "CARI": 0.9033, "Classifier": "Random Forest (B=100)", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)"}, {"tau": 0.5, "TP": 454, "TN": 692, "FP": 28, "FN": 26, "Accuracy_Pct": 95.5, "Precision_Pct": 94.19, "Recall_Pct": 94.58, "F1_Pct": 94.39, "MCC": 0.9063, "ROC_AUC": 0.9949, "FPR_Pct": 3.89, "FNR_Pct": 5.42, "WAcc_99_Pct": 96.1, "TCR_9": 1.73, "TCR_99": 0.17, "TCR_999": 0.02, "CARI": 0.6093, "Classifier": "Logistic Regression (L2)", "Stage": "A0: Protocol A (Flawed Baseline)"}, {"tau": 0.5, "TP": 392, "TN": 656, "FP": 26, "FN": 31, "Accuracy_Pct": 94.84, "Precision_Pct": 93.78, "Recall_Pct": 92.67, "F1_Pct": 93.22, "MCC": 0.8906, "ROC_AUC": 0.9958, "FPR_Pct": 3.81, "FNR_Pct": 7.33, "WAcc_99_Pct": 96.17, "TCR_9": 1.6, "TCR_99": 0.16, "TCR_999": 0.02, "CARI": 0.6674, "Classifier": "Logistic Regression (L2)", "Stage": "A1: +Pre-Split Deduplication"}, {"tau": 0.5, "TP": 391, "TN": 656, "FP": 26, "FN": 32, "Accuracy_Pct": 94.75, "Precision_Pct": 93.76, "Recall_Pct": 92.43, "F1_Pct": 93.1, "MCC": 0.8887, "ROC_AUC": 0.9953, "FPR_Pct": 3.81, "FNR_Pct": 7.57, "WAcc_99_Pct": 96.16, "TCR_9": 1.59, "TCR_99": 0.16, "TCR_999": 0.02, "CARI": 0.731, "Classifier": "Logistic Regression (L2)", "Stage": "A2: +Train-Only TF-IDF Fit"}, {"tau": 0.5, "TP": 367, "TN": 656, "FP": 26, "FN": 55, "Accuracy_Pct": 92.66, "Precision_Pct": 93.38, "Recall_Pct": 86.97, "F1_Pct": 90.06, "MCC": 0.8439, "ROC_AUC": 0.9936, "FPR_Pct": 3.81, "FNR_Pct": 13.03, "WAcc_99_Pct": 96.13, "TCR_9": 1.46, "TCR_99": 0.16, "TCR_999": 0.02, "CARI": 0.7695, "Classifier": "Logistic Regression (L2)", "Stage": "A3: +Chronological Split (tau=0.50)"}, {"tau": 0.667, "TP": 351, "TN": 681, "FP": 1, "FN": 71, "Accuracy_Pct": 93.48, "Precision_Pct": 99.72, "Recall_Pct": 83.18, "F1_Pct": 90.7, "MCC": 0.8658, "ROC_AUC": 0.9936, "FPR_Pct": 0.15, "FNR_Pct": 16.82, "WAcc_99_Pct": 99.75, "TCR_9": 5.28, "TCR_99": 2.48, "TCR_999": 0.39, "CARI": 0.9043, "Classifier": "Logistic Regression (L2)", "Stage": "B: Protocol B (Full SERC + Calibrated tau*)"}]}, "vocab": {"spam_sig_tok_21": {"idf": 3.848, "nb": 1.6817, "svm": 0.9544, "rf": 0.0784, "lr": 0.5337}, "beneficiary": {"idf": 3.9043, "nb": 1.8451, "svm": 0.9758, "rf": 0.0828, "lr": 0.549}, "weight_loss": {"idf": 3.8678, "nb": 1.7068, "svm": 0.9905, "rf": 0.1038, "lr": 0.5418}, "spam_sig_tok_45": {"idf": 3.8678, "nb": 1.7221, "svm": 0.9244, "rf": 0.0871, "lr": 0.5341}, "loans": {"idf": 3.8678, "nb": 1.7202, "svm": 0.8805, "rf": 0.1036, "lr": 0.5275}, "spam_sig_tok_18": {"idf": 3.9252, "nb": 1.8739, "svm": 1.021, "rf": 0.1008, "lr": 0.5417}, "spam_sig_tok_44": {"idf": 3.8364, "nb": 1.5985, "svm": 0.9455, "rf": 0.0953, "lr": 0.5407}, "spam_sig_tok_7": {"idf": 3.8718, "nb": 1.6696, "svm": 0.9463, "rf": 0.1084, "lr": 0.5292}, "spam_sig_tok_29": {"idf": 3.8758, "nb": 1.6737, "svm": 0.9084, "rf": 0.0905, "lr": 0.5236}, "million": {"idf": 3.9002, "nb": 1.7411, "svm": 0.9167, "rf": 0.086, "lr": 0.522}, "spam_sig_tok_13": {"idf": 3.9551, "nb": 1.9255, "svm": 0.9516, "rf": 0.1102, "lr": 0.5246}, "lottery": {"idf": 3.9002, "nb": 1.702, "svm": 0.8659, "rf": 0.1074, "lr": 0.5157}, "spam_sig_tok_43": {"idf": 3.9294, "nb": 1.7731, "svm": 1.0709, "rf": 0.0634, "lr": 0.5473}, "spam_sig_tok_32": {"idf": 3.8249, "nb": 1.4533, "svm": 0.8082, "rf": 0.0931, "lr": 0.5008}, "spam_sig_tok_34": {"idf": 3.8758, "nb": 1.5606, "svm": 0.8011, "rf": 0.0773, "lr": 0.4928}, "prescription": {"idf": 3.8758, "nb": 1.5729, "svm": 0.8838, "rf": 0.0642, "lr": 0.5134}, "bitcoin": {"idf": 4.0041, "nb": 1.9425, "svm": 0.901, "rf": 0.0975, "lr": 0.4927}, "casino": {"idf": 3.9551, "nb": 1.7573, "svm": 0.9381, "rf": 0.0839, "lr": 0.5188}, "wire_transfer": {"idf": 3.9084, "nb": 1.605, "svm": 0.8694, "rf": 0.0806, "lr": 0.508}, "prize": {"idf": 3.986, "nb": 1.8522, "svm": 0.9038, "rf": 0.095, "lr": 0.5067}, "cialis": {"idf": 3.852, "nb": 1.4774, "svm": 0.7118, "rf": 0.0808, "lr": 0.4827}, "spam_sig_tok_41": {"idf": 3.8678, "nb": 1.49, "svm": 0.7842, "rf": 0.0802, "lr": 0.4906}, "spam_sig_tok_0": {"idf": 3.9043, "nb": 1.5288, "svm": 0.7744, "rf": 0.0937, "lr": 0.4799}, "spam_sig_tok_11": {"idf": 3.9294, "nb": 1.609, "svm": 0.852, "rf": 0.0993, "lr": 0.499}, "spam_sig_tok_25": {"idf": 3.9336, "nb": 1.6034, "svm": 0.8817, "rf": 0.0869, "lr": 0.4962}, "spam_sig_tok_15": {"idf": 3.9336, "nb": 1.6179, "svm": 0.9562, "rf": 0.0806, "lr": 0.5229}, "winner": {"idf": 4.0133, "nb": 1.8155, "svm": 1.0219, "rf": 0.089, "lr": 0.5104}, "spam_sig_tok_36": {"idf": 3.8798, "nb": 1.4807, "svm": 0.7919, "rf": 0.0892, "lr": 0.4887}, "spam_sig_tok_3": {"idf": 3.892, "nb": 1.5079, "svm": 0.8532, "rf": 0.0854, "lr": 0.4978}, "crypto": {"idf": 4.0226, "nb": 1.8374, "svm": 0.9704, "rf": 0.0908, "lr": 0.5167}, "pharmacy": {"idf": 4.0087, "nb": 1.7764, "svm": 0.882, "rf": 0.0635, "lr": 0.4903}, "spam_sig_tok_22": {"idf": 3.852, "nb": 1.4, "svm": 0.7136, "rf": 0.0894, "lr": 0.4716}, "double_returns": {"idf": 3.9252, "nb": 1.5472, "svm": 0.8206, "rf": 0.0688, "lr": 0.4881}, "spam_sig_tok_47": {"idf": 3.9905, "nb": 1.6885, "svm": 0.8212, "rf": 0.0731, "lr": 0.478}, "cheap": {"idf": 3.9905, "nb": 1.6948, "svm": 0.9017, "rf": 0.0975, "lr": 0.4954}, "spam_sig_tok_8": {"idf": 3.9168, "nb": 1.5089, "svm": 0.9266, "rf": 0.1042, "lr": 0.5022}, "dollars": {"idf": 3.9294, "nb": 1.5557, "svm": 0.7926, "rf": 0.0796, "lr": 0.4874}, "suspended": {"idf": 3.9551, "nb": 1.5972, "svm": 0.7868, "rf": 0.0951, "lr": 0.4789}, "spam_sig_tok_39": {"idf": 3.9465, "nb": 1.5675, "svm": 0.8198, "rf": 0.0605, "lr": 0.4834}, "spam_sig_tok_49": {"idf": 3.9595, "nb": 1.5853, "svm": 0.8519, "rf": 0.0684, "lr": 0.4837}, "spam_sig_tok_26": {"idf": 3.986, "nb": 1.6638, "svm": 0.8466, "rf": 0.09, "lr": 0.4896}, "cash": {"idf": 4.0461, "nb": 1.7699, "svm": 0.8041, "rf": 0.0779, "lr": 0.4586}, "spam_sig_tok_48": {"idf": 4.0087, "nb": 1.6553, "svm": 0.8462, "rf": 0.0743, "lr": 0.478}, "spam_sig_tok_27": {"idf": 3.9595, "nb": 1.541, "svm": 0.7865, "rf": 0.1005, "lr": 0.4738}, "debt_consolidation": {"idf": 3.9727, "nb": 1.5852, "svm": 0.8536, "rf": 0.0743, "lr": 0.4862}, "spam_sig_tok_38": {"idf": 3.9508, "nb": 1.5272, "svm": 0.9012, "rf": 0.0989, "lr": 0.4918}, "pills": {"idf": 3.9639, "nb": 1.5517, "svm": 0.7325, "rf": 0.099, "lr": 0.4615}, "spam_sig_tok_9": {"idf": 3.9727, "nb": 1.5577, "svm": 0.8477, "rf": 0.088, "lr": 0.4815}, "spam_sig_tok_4": {"idf": 4.0133, "nb": 1.6456, "svm": 0.8568, "rf": 0.0841, "lr": 0.4793}, "spam_sig_tok_1": {"idf": 4.0319, "nb": 1.6788, "svm": 0.8423, "rf": 0.0925, "lr": 0.4739}, "spam_sig_tok_31": {"idf": 4.0751, "nb": 1.7936, "svm": 0.8723, "rf": 0.079, "lr": 0.4693}, "spam_sig_tok_10": {"idf": 3.9727, "nb": 1.5221, "svm": 0.7932, "rf": 0.0704, "lr": 0.4696}, "spam_sig_tok_23": {"idf": 4.0414, "nb": 1.6665, "svm": 0.9517, "rf": 0.0831, "lr": 0.4892}, "spam_sig_tok_40": {"idf": 4.0041, "nb": 1.549, "svm": 0.69, "rf": 0.0726, "lr": 0.4458}, "spam_sig_tok_46": {"idf": 3.9422, "nb": 1.4443, "svm": 0.7506, "rf": 0.0922, "lr": 0.46}, "mortgage": {"idf": 3.9816, "nb": 1.5107, "svm": 0.7708, "rf": 0.0985, "lr": 0.4617}, "jackpot": {"idf": 3.9816, "nb": 1.514, "svm": 0.7464, "rf": 0.0819, "lr": 0.4561}, "spam_sig_tok_20": {"idf": 3.9465, "nb": 1.4261, "svm": 0.7308, "rf": 0.0901, "lr": 0.4569}, "spam_sig_tok_42": {"idf": 3.9595, "nb": 1.4602, "svm": 0.7737, "rf": 0.0794, "lr": 0.4587}, "spam_sig_tok_35": {"idf": 3.986, "nb": 1.5166, "svm": 0.7588, "rf": 0.0822, "lr": 0.4603}, "medications": {"idf": 3.9771, "nb": 1.4981, "svm": 0.7899, "rf": 0.0839, "lr": 0.4716}, "spam_sig_tok_28": {"idf": 4.0319, "nb": 1.594, "svm": 0.8225, "rf": 0.0642, "lr": 0.4653}, "spam_sig_tok_14": {"idf": 4.0319, "nb": 1.5846, "svm": 0.8011, "rf": 0.0817, "lr": 0.4533}, "spam_sig_tok_37": {"idf": 4.0461, "nb": 1.6225, "svm": 0.9026, "rf": 0.0876, "lr": 0.4784}, "spam_sig_tok_12": {"idf": 3.9422, "nb": 1.3924, "svm": 0.7233, "rf": 0.0807, "lr": 0.4455}, "spam_sig_tok_19": {"idf": 4.0226, "nb": 1.5598, "svm": 0.8152, "rf": 0.0818, "lr": 0.4642}, "spam_sig_tok_6": {"idf": 4.08, "nb": 1.7017, "svm": 0.7938, "rf": 0.0656, "lr": 0.4585}, "refinance": {"idf": 3.9595, "nb": 1.4335, "svm": 0.6625, "rf": 0.0496, "lr": 0.4386}, "spam_sig_tok_16": {"idf": 4.0557, "nb": 1.5924, "svm": 0.7382, "rf": 0.0882, "lr": 0.4388}, "spam_sig_tok_2": {"idf": 3.9816, "nb": 1.4501, "svm": 0.7296, "rf": 0.0646, "lr": 0.4473}, "lowest_price": {"idf": 4.0133, "nb": 1.4964, "svm": 0.6931, "rf": 0.0859, "lr": 0.4382}, "spam_sig_tok_24": {"idf": 4.0041, "nb": 1.4762, "svm": 0.6826, "rf": 0.1061, "lr": 0.4416}, "offshore": {"idf": 3.9422, "nb": 1.3691, "svm": 0.6222, "rf": 0.0854, "lr": 0.4288}, "guaranteed": {"idf": 3.8559, "nb": 1.2263, "svm": 0.5759, "rf": 0.0716, "lr": 0.4251}, "spam_sig_tok_5": {"idf": 3.9905, "nb": 1.4094, "svm": 0.6848, "rf": 0.0562, "lr": 0.4412}, "rolex": {"idf": 3.9727, "nb": 1.3565, "svm": 0.6353, "rf": 0.092, "lr": 0.4211}, "viagra": {"idf": 4.0366, "nb": 1.4007, "svm": 0.7577, "rf": 0.0691, "lr": 0.4341}, "spam_sig_tok_30": {"idf": 3.986, "nb": 1.3331, "svm": 0.6511, "rf": 0.0952, "lr": 0.4173}, "spam_sig_tok_17": {"idf": 4.1049, "nb": 1.4807, "svm": 0.6759, "rf": 0.0809, "lr": 0.4138}, "spam_sig_tok_33": {"idf": 4.1151, "nb": 1.3948, "svm": 0.5376, "rf": 0.0577, "lr": 0.3734}, "replica": {"idf": 4.0226, "nb": 1.2301, "svm": 0.5492, "rf": 0.0746, "lr": 0.3843}, "curriculum": {"idf": 3.3601, "nb": -1.3333, "svm": -0.9238, "rf": -0.0705, "lr": -0.5263}, "ham_corp_tok_8": {"idf": 3.3625, "nb": -1.3062, "svm": -0.8783, "rf": -0.0716, "lr": -0.5098}, "ham_corp_tok_25": {"idf": 3.4663, "nb": -1.3487, "svm": -0.8824, "rf": -0.0613, "lr": -0.4847}, "ham_corp_tok_21": {"idf": 3.3968, "nb": -1.243, "svm": -0.9341, "rf": -0.0778, "lr": -0.5014}, "houston_desk": {"idf": 3.7268, "nb": -2.9008, "svm": -0.6155, "rf": -0.0628, "lr": -0.4171}, "dynegy_merger": {"idf": 3.7407, "nb": -2.895, "svm": -0.6124, "rf": -0.0534, "lr": -0.4126}, "ham_corp_tok_44": {"idf": 3.4143, "nb": -1.2378, "svm": -0.8016, "rf": -0.0838, "lr": -0.4704}, "revision": {"idf": 3.3918, "nb": -1.2184, "svm": -0.9079, "rf": -0.0748, "lr": -0.4965}, "ham_corp_tok_29": {"idf": 3.353, "nb": -1.1626, "svm": -0.8265, "rf": -0.0669, "lr": -0.4874}, "spreadsheet": {"idf": 3.422, "nb": -1.2286, "svm": -0.6985, "rf": -0.0598, "lr": -0.4562}, "bammel_storage": {"idf": 3.7549, "nb": -2.888, "svm": -0.6364, "rf": -0.0667, "lr": -0.411}, "vince_kaminski": {"idf": 3.7584, "nb": -2.8899, "svm": -0.6236, "rf": -0.0661, "lr": -0.4108}, "schedule": {"idf": 3.4018, "nb": -1.1886, "svm": -0.8091, "rf": -0.057, "lr": -0.4714}, "ham_corp_tok_41": {"idf": 3.3506, "nb": -1.1044, "svm": -0.815, "rf": -0.0662, "lr": -0.4773}, "ect_corp": {"idf": 3.7874, "nb": -2.8821, "svm": -0.5798, "rf": -0.0596, "lr": -0.4007}, "ham_corp_tok_33": {"idf": 3.4018, "nb": -1.1553, "svm": -0.8482, "rf": -0.0615, "lr": -0.475}, "ham_corp_tok_48": {"idf": 3.3698, "nb": -1.1083, "svm": -0.7985, "rf": -0.0663, "lr": -0.4667}, "ham_corp_tok_16": {"idf": 3.3698, "nb": -1.1239, "svm": -0.7866, "rf": -0.0555, "lr": -0.4637}, "caiso_tariff": {"idf": 3.7948, "nb": -2.8742, "svm": -0.602, "rf": -0.0771, "lr": -0.3987}, "ham_corp_tok_12": {"idf": 3.453, "nb": -1.2352, "svm": -0.8627, "rf": -0.0697, "lr": -0.4827}, "deadline": {"idf": 3.3968, "nb": -1.1294, "svm": -0.7796, "rf": -0.0692, "lr": -0.4608}, "ham_corp_tok_14": {"idf": 3.3993, "nb": -1.1202, "svm": -0.6603, "rf": -0.0639, "lr": -0.4361}, "enron_north_america": {"idf": 3.8022, "nb": -2.8777, "svm": -0.5855, "rf": -0.0528, "lr": -0.3985}, "ham_corp_tok_4": {"idf": 3.4374, "nb": -1.1885, "svm": -0.8904, "rf": -0.0733, "lr": -0.4852}, "ferc_filing": {"idf": 3.8135, "nb": -2.8656, "svm": -0.5972, "rf": -0.0688, "lr": -0.3912}, "ham_corp_tok_27": {"idf": 3.3993, "nb": -1.1183, "svm": -0.8478, "rf": -0.0661, "lr": -0.4719}, "pipeline": {"idf": 3.4478, "nb": -1.176, "svm": -0.7467, "rf": -0.0646, "lr": -0.4485}, "seminar": {"idf": 3.4043, "nb": -1.1255, "svm": -0.7219, "rf": -0.0563, "lr": -0.451}, "deployment": {"idf": 3.4743, "nb": -1.1941, "svm": -0.7441, "rf": -0.0639, "lr": -0.4394}, "ham_corp_tok_6": {"idf": 3.4169, "nb": -1.1303, "svm": -0.8023, "rf": -0.0644, "lr": -0.4592}, "sitara_deal": {"idf": 3.8287, "nb": -2.8659, "svm": -0.6188, "rf": -0.0626, "lr": -0.3941}, "ham_corp_tok_0": {"idf": 3.4583, "nb": -1.1577, "svm": -0.6709, "rf": -0.0717, "lr": -0.4234}, "ham_corp_tok_45": {"idf": 3.4478, "nb": -1.1619, "svm": -0.7437, "rf": -0.0622, "lr": -0.4482}, "ham_corp_tok_37": {"idf": 3.4478, "nb": -1.1574, "svm": -0.7887, "rf": -0.0708, "lr": -0.4574}, "ham_corp_tok_32": {"idf": 3.4374, "nb": -1.1464, "svm": -0.765, "rf": -0.0749, "lr": -0.4531}, "agenda": {"idf": 3.4374, "nb": -1.1407, "svm": -0.7501, "rf": -0.0657, "lr": -0.447}, "workshop": {"idf": 3.461, "nb": -1.1524, "svm": -0.8004, "rf": -0.0652, "lr": -0.4481}, "memorandum": {"idf": 3.4504, "nb": -1.1473, "svm": -0.7445, "rf": -0.0567, "lr": -0.4461}, "ham_corp_tok_34": {"idf": 3.4504, "nb": -1.1584, "svm": -0.7666, "rf": -0.0637, "lr": -0.45}, "ham_corp_tok_18": {"idf": 3.4504, "nb": -1.1497, "svm": -0.745, "rf": -0.0573, "lr": -0.4411}, "farmer_daren": {"idf": 3.8598, "nb": -2.8507, "svm": -0.5707, "rf": -0.0695, "lr": -0.3795}, "ham_corp_tok_24": {"idf": 3.4093, "nb": -1.0855, "svm": -0.6793, "rf": -0.0548, "lr": -0.4359}, "ham_corp_tok_19": {"idf": 3.3482, "nb": -1.0083, "svm": -0.7299, "rf": -0.0718, "lr": -0.4429}, "logistics": {"idf": 3.4245, "nb": -1.0876, "svm": -0.7435, "rf": -0.0732, "lr": -0.4437}, "ham_corp_tok_30": {"idf": 3.4271, "nb": -1.1004, "svm": -0.9249, "rf": -0.0694, "lr": -0.478}, "ham_corp_tok_40": {"idf": 3.4743, "nb": -1.132, "svm": -0.7238, "rf": -0.0656, "lr": -0.4345}, "amendment": {"idf": 3.3968, "nb": -1.0455, "svm": -0.7041, "rf": -0.0682, "lr": -0.4294}, "extension": {"idf": 3.4194, "nb": -1.0849, "svm": -0.7374, "rf": -0.0585, "lr": -0.4474}, "board": {"idf": 3.4245, "nb": -1.077, "svm": -0.7158, "rf": -0.0634, "lr": -0.4371}, "ham_corp_tok_28": {"idf": 3.4043, "nb": -1.0407, "svm": -0.762, "rf": -0.0605, "lr": -0.4397}, "gas_scheduling": {"idf": 3.892, "nb": -2.842, "svm": -0.5816, "rf": -0.0568, "lr": -0.3756}, "ham_corp_tok_9": {"idf": 3.3746, "nb": -1.0199, "svm": -0.7375, "rf": -0.0553, "lr": -0.4424}, "ham_corp_tok_42": {"idf": 3.3968, "nb": -1.0277, "svm": -0.691, "rf": -0.0636, "lr": -0.4291}, "louise_kitchen": {"idf": 3.9002, "nb": -2.8337, "svm": -0.5936, "rf": -0.0489, "lr": -0.3734}, "ham_corp_tok_20": {"idf": 3.3601, "nb": -0.9992, "svm": -0.6816, "rf": -0.0694, "lr": -0.4363}, "ham_corp_tok_38": {"idf": 3.3722, "nb": -1.0027, "svm": -0.6907, "rf": -0.0546, "lr": -0.4317}, "ham_corp_tok_5": {"idf": 3.3087, "nb": -0.9257, "svm": -0.6113, "rf": -0.0582, "lr": -0.4157}, "ham_corp_tok_3": {"idf": 3.3819, "nb": -0.9937, "svm": -0.7205, "rf": -0.0734, "lr": -0.4263}, "maintenance": {"idf": 3.4933, "nb": -1.1121, "svm": -0.8385, "rf": -0.0583, "lr": -0.4434}, "forecast": {"idf": 3.3553, "nb": -0.9629, "svm": -0.6393, "rf": -0.0563, "lr": -0.4215}, "engineering": {"idf": 3.3993, "nb": -1.0009, "svm": -0.6734, "rf": -0.0736, "lr": -0.4215}, "compliance": {"idf": 3.3993, "nb": -0.9837, "svm": -0.6952, "rf": -0.0622, "lr": -0.426}, "ham_corp_tok_47": {"idf": 3.3893, "nb": -0.9898, "svm": -0.7218, "rf": -0.057, "lr": -0.4309}, "ham_corp_tok_13": {"idf": 3.4322, "nb": -1.0197, "svm": -0.6687, "rf": -0.0618, "lr": -0.4162}, "ham_corp_tok_49": {"idf": 3.4583, "nb": -1.0545, "svm": -0.734, "rf": -0.0708, "lr": -0.4245}, "ham_corp_tok_35": {"idf": 3.4824, "nb": -1.062, "svm": -0.6929, "rf": -0.0505, "lr": -0.4164}, "vendor": {"idf": 3.4716, "nb": -1.0661, "svm": -0.7233, "rf": -0.0706, "lr": -0.4231}, "ham_corp_tok_39": {"idf": 3.461, "nb": -1.0615, "svm": -0.7707, "rf": -0.0723, "lr": -0.4368}, "experiment": {"idf": 3.4068, "nb": -1.0147, "svm": -0.759, "rf": -0.0591, "lr": -0.4412}, "ham_corp_tok_10": {"idf": 3.4296, "nb": -1.0118, "svm": -0.6609, "rf": -0.0638, "lr": -0.4132}, "minutes": {"idf": 3.4118, "nb": -0.9743, "svm": -0.6653, "rf": -0.0619, "lr": -0.4127}, "ham_corp_tok_2": {"idf": 3.4478, "nb": -1.0203, "svm": -0.6649, "rf": -0.069, "lr": -0.4163}, "reconciliation": {"idf": 3.4716, "nb": -1.0492, "svm": -0.762, "rf": -0.0554, "lr": -0.4307}, "ham_corp_tok_7": {"idf": 3.4271, "nb": -0.9948, "svm": -0.622, "rf": -0.0601, "lr": -0.4045}, "committee": {"idf": 3.5071, "nb": -1.0875, "svm": -0.7775, "rf": -0.0573, "lr": -0.4302}, "ham_corp_tok_36": {"idf": 3.4194, "nb": -0.9861, "svm": -0.6978, "rf": -0.0726, "lr": -0.4154}, "ham_corp_tok_1": {"idf": 3.469, "nb": -1.0307, "svm": -0.6944, "rf": -0.0565, "lr": -0.4172}, "payroll": {"idf": 3.4961, "nb": -1.0615, "svm": -0.7566, "rf": -0.0705, "lr": -0.4256}, "ham_corp_tok_43": {"idf": 3.3577, "nb": -0.9327, "svm": -0.6633, "rf": -0.0613, "lr": -0.4183}, "allocation": {"idf": 3.4824, "nb": -0.9915, "svm": -0.6118, "rf": -0.0657, "lr": -0.3849}, "ham_corp_tok_26": {"idf": 3.4093, "nb": -0.9306, "svm": -0.588, "rf": -0.0711, "lr": -0.3898}, "ham_corp_tok_22": {"idf": 3.453, "nb": -0.9798, "svm": -0.6615, "rf": -0.0559, "lr": -0.4012}, "benchmark": {"idf": 3.469, "nb": -0.9814, "svm": -0.7, "rf": -0.0559, "lr": -0.4075}, "quarterly": {"idf": 3.4824, "nb": -1.0013, "svm": -0.6257, "rf": -0.0632, "lr": -0.3941}, "limited": {"idf": 2.9055, "nb": 0.4314, "svm": 0.6978, "rf": 0.0458, "lr": 0.4131}, "ham_corp_tok_23": {"idf": 3.5183, "nb": -1.0383, "svm": -0.614, "rf": -0.0865, "lr": -0.3871}, "ham_corp_tok_17": {"idf": 3.4906, "nb": -0.9849, "svm": -0.5915, "rf": -0.0618, "lr": -0.3824}, "university": {"idf": 3.461, "nb": -0.9707, "svm": -0.689, "rf": -0.0653, "lr": -0.4082}, "colleague": {"idf": 3.4851, "nb": -0.9852, "svm": -0.6434, "rf": -0.0498, "lr": -0.3985}, "immediately": {"idf": 2.9412, "nb": 0.4378, "svm": 0.5249, "rf": 0.0581, "lr": 0.3804}, "ham_corp_tok_15": {"idf": 3.5183, "nb": -0.9812, "svm": -0.5993, "rf": -0.0591, "lr": -0.3797}, "milestone": {"idf": 3.4245, "nb": -0.9215, "svm": -0.6541, "rf": -0.0661, "lr": -0.4004}, "ham_corp_tok_31": {"idf": 3.4824, "nb": -0.9485, "svm": -0.6378, "rf": -0.0564, "lr": -0.3894}, "ham_corp_tok_11": {"idf": 3.4988, "nb": -0.9529, "svm": -0.6492, "rf": -0.0693, "lr": -0.3878}, "manuscript": {"idf": 3.4245, "nb": -0.8799, "svm": -0.5863, "rf": -0.0433, "lr": -0.3802}, "verify": {"idf": 2.9162, "nb": 0.4203, "svm": 0.5999, "rf": 0.0629, "lr": 0.3861}, "registration": {"idf": 2.8904, "nb": 0.4113, "svm": 0.523, "rf": 0.0521, "lr": 0.3763}, "statement": {"idf": 2.8667, "nb": 0.414, "svm": 0.7822, "rf": 0.0544, "lr": 0.434}, "ham_corp_tok_46": {"idf": 3.3943, "nb": -0.8319, "svm": -0.5282, "rf": -0.0653, "lr": -0.3641}, "voucher": {"idf": 2.9364, "nb": 0.4083, "svm": 0.6444, "rf": 0.0607, "lr": 0.393}, "claim": {"idf": 2.898, "nb": 0.4066, "svm": 0.5122, "rf": 0.0469, "lr": 0.368}, "subscribe": {"idf": 2.88, "nb": 0.3861, "svm": 0.5529, "rf": 0.0568, "lr": 0.3658}, "receipt": {"idf": 2.9443, "nb": 0.4119, "svm": 0.5885, "rf": 0.0571, "lr": 0.3766}, "access": {"idf": 2.904, "nb": 0.3957, "svm": 0.7102, "rf": 0.0515, "lr": 0.4008}, "alert": {"idf": 2.9162, "nb": 0.3843, "svm": 0.5716, "rf": 0.0498, "lr": 0.3661}, "unsubscribe": {"idf": 2.9116, "nb": 0.387, "svm": 0.4852, "rf": 0.045, "lr": 0.3469}, "billing": {"idf": 2.9209, "nb": 0.3902, "svm": 0.5198, "rf": 0.0503, "lr": 0.3561}, "update": {"idf": 2.9798, "nb": 0.3996, "svm": 0.4686, "rf": 0.0494, "lr": 0.3384}, "urgent": {"idf": 2.9459, "nb": 0.3963, "svm": 0.6115, "rf": 0.0555, "lr": 0.377}, "notification": {"idf": 2.9507, "nb": 0.3857, "svm": 0.5779, "rf": 0.0487, "lr": 0.3574}, "credit": {"idf": 2.9523, "nb": 0.3702, "svm": 0.3548, "rf": 0.0624, "lr": 0.3025}, "reward": {"idf": 2.8682, "nb": 0.3612, "svm": 0.4285, "rf": 0.0592, "lr": 0.3259}, "html_table": {"idf": 2.983, "nb": 0.3895, "svm": 0.4284, "rf": 0.0366, "lr": 0.324}, "payment": {"idf": 2.9523, "nb": 0.3796, "svm": 0.6109, "rf": 0.0525, "lr": 0.3603}, "invoice": {"idf": 2.9333, "nb": 0.3528, "svm": 0.3959, "rf": 0.0393, "lr": 0.3033}, "click": {"idf": 2.8995, "nb": 0.3533, "svm": 0.5474, "rf": 0.0464, "lr": 0.345}, "href_link": {"idf": 2.9178, "nb": 0.3511, "svm": 0.4637, "rf": 0.0413, "lr": 0.3193}, "exclusive": {"idf": 2.9178, "nb": 0.3538, "svm": 0.3985, "rf": 0.0476, "lr": 0.3064}, "order": {"idf": 2.9781, "nb": 0.3521, "svm": 0.5237, "rf": 0.0419, "lr": 0.3218}, "free": {"idf": 2.904, "nb": 0.3413, "svm": 0.3959, "rf": 0.0451, "lr": 0.3025}, "security": {"idf": 2.8815, "nb": 0.3449, "svm": 0.603, "rf": 0.0397, "lr": 0.3465}, "discount": {"idf": 2.8904, "nb": 0.3386, "svm": 0.3976, "rf": 0.0431, "lr": 0.3004}, "password": {"idf": 2.993, "nb": 0.354, "svm": 0.5214, "rf": 0.0468, "lr": 0.3213}, "approved": {"idf": 2.8507, "nb": 0.3356, "svm": 0.272, "rf": 0.0428, "lr": 0.283}, "loyalty": {"idf": 2.9364, "nb": 0.3395, "svm": 0.4447, "rf": 0.0432, "lr": 0.3044}, "account": {"idf": 2.9507, "nb": 0.3481, "svm": 0.5222, "rf": 0.0347, "lr": 0.3243}, "login": {"idf": 2.904, "nb": 0.3351, "svm": 0.2536, "rf": 0.0385, "lr": 0.2662}, "promotion": {"idf": 2.8889, "nb": 0.3141, "svm": 0.3214, "rf": 0.0277, "lr": 0.271}, "member": {"idf": 2.898, "nb": 0.3088, "svm": 0.416, "rf": 0.043, "lr": 0.2888}, "confirm": {"idf": 2.877, "nb": 0.3203, "svm": 0.3872, "rf": 0.0556, "lr": 0.2899}, "automated": {"idf": 2.9412, "nb": 0.329, "svm": 0.3918, "rf": 0.0402, "lr": 0.2884}, "offer": {"idf": 2.9523, "nb": 0.3271, "svm": 0.4786, "rf": 0.0396, "lr": 0.3024}, "font_arial": {"idf": 2.9178, "nb": 0.2984, "svm": 0.1389, "rf": 0.0452, "lr": 0.2223}, "customer": {"idf": 2.8741, "nb": 0.285, "svm": 0.4369, "rf": 0.0337, "lr": 0.2752}, "portal": {"idf": 2.9193, "nb": 0.2754, "svm": 0.4012, "rf": 0.0343, "lr": 0.2587}, "bonus": {"idf": 2.97, "nb": 0.2777, "svm": 0.1781, "rf": 0.0443, "lr": 0.2094}, "project": {"idf": 2.4386, "nb": -0.2955, "svm": -0.5681, "rf": -0.0463, "lr": -0.3378}, "status": {"idf": 2.4472, "nb": -0.2925, "svm": -0.6236, "rf": -0.0487, "lr": -0.3466}, "please": {"idf": 2.4637, "nb": -0.2759, "svm": -0.4275, "rf": -0.0358, "lr": -0.2951}, "file": {"idf": 2.3993, "nb": -0.2736, "svm": -0.5478, "rf": -0.033, "lr": -0.322}, "thanks": {"idf": 2.4676, "nb": -0.2591, "svm": -0.5595, "rf": -0.042, "lr": -0.3039}, "report": {"idf": 2.4395, "nb": -0.2521, "svm": -0.4923, "rf": -0.031, "lr": -0.2906}, "time": {"idf": 2.4187, "nb": -0.2469, "svm": -0.5938, "rf": -0.0431, "lr": -0.3076}, "number": {"idf": 2.4234, "nb": -0.2462, "svm": -0.5809, "rf": -0.0434, "lr": -0.3067}, "view": {"idf": 2.4169, "nb": -0.2597, "svm": -0.381, "rf": -0.0446, "lr": -0.2786}, "page": {"idf": 2.392, "nb": -0.2429, "svm": -0.449, "rf": -0.0334, "lr": -0.2794}, "available": {"idf": 2.4002, "nb": -0.2399, "svm": -0.5416, "rf": -0.0344, "lr": -0.2953}, "details": {"idf": 2.4472, "nb": -0.2408, "svm": -0.4272, "rf": -0.0431, "lr": -0.2692}, "sent": {"idf": 2.4395, "nb": -0.2399, "svm": -0.4476, "rf": -0.0319, "lr": -0.2716}, "review": {"idf": 2.4319, "nb": -0.2226, "svm": -0.4915, "rf": -0.0304, "lr": -0.2715}, "tomorrow": {"idf": 2.4281, "nb": -0.2443, "svm": -0.3763, "rf": -0.0459, "lr": -0.2648}, "agreement": {"idf": 2.3856, "nb": -0.2053, "svm": -0.3255, "rf": -0.0376, "lr": -0.2255}, "contract": {"idf": 2.3883, "nb": -0.2238, "svm": -0.5563, "rf": -0.0311, "lr": -0.2894}, "request": {"idf": 2.4002, "nb": -0.237, "svm": -0.4542, "rf": -0.0436, "lr": -0.2761}, "message": {"idf": 2.4178, "nb": -0.2131, "svm": -0.3404, "rf": -0.0374, "lr": -0.2289}, "thank": {"idf": 2.3993, "nb": -0.2108, "svm": -0.3478, "rf": -0.0298, "lr": -0.2346}, "service": {"idf": 2.4376, "nb": -0.2159, "svm": -0.4203, "rf": -0.0381, "lr": -0.2479}, "regards": {"idf": 2.4395, "nb": -0.2188, "svm": -0.5087, "rf": -0.033, "lr": -0.2675}, "email": {"idf": 2.4395, "nb": -0.206, "svm": -0.4877, "rf": -0.0275, "lr": -0.2548}, "week": {"idf": 2.4453, "nb": -0.2119, "svm": -0.509, "rf": -0.0332, "lr": -0.2639}, "sincerely": {"idf": 2.4329, "nb": -0.208, "svm": -0.4551, "rf": -0.0293, "lr": -0.2483}, "information": {"idf": 2.4244, "nb": -0.1974, "svm": -0.3721, "rf": -0.0311, "lr": -0.2236}, "questions": {"idf": 2.3993, "nb": -0.202, "svm": -0.3956, "rf": -0.0311, "lr": -0.2395}, "support": {"idf": 2.3902, "nb": -0.1961, "svm": -0.3159, "rf": -0.0393, "lr": -0.2143}, "check": {"idf": 2.4234, "nb": -0.2034, "svm": -0.3638, "rf": -0.0296, "lr": -0.2273}, "received": {"idf": 2.3984, "nb": -0.1902, "svm": -0.3289, "rf": -0.024, "lr": -0.212}, "link": {"idf": 2.4501, "nb": -0.2096, "svm": -0.4955, "rf": -0.0388, "lr": -0.2595}, "document": {"idf": 2.4281, "nb": -0.1887, "svm": -0.3569, "rf": -0.0322, "lr": -0.2159}, "find": {"idf": 2.4002, "nb": -0.1866, "svm": -0.3636, "rf": -0.0291, "lr": -0.2173}, "below": {"idf": 2.4281, "nb": -0.1915, "svm": -0.441, "rf": -0.0371, "lr": -0.2343}, "team": {"idf": 2.392, "nb": -0.1698, "svm": -0.4191, "rf": -0.0253, "lr": -0.2175}, "network": {"idf": 2.453, "nb": -0.1807, "svm": -0.329, "rf": -0.0258, "lr": -0.2006}, "contact": {"idf": 2.4011, "nb": -0.1692, "svm": -0.367, "rf": -0.0272, "lr": -0.2049}, "system": {"idf": 2.454, "nb": -0.1823, "svm": -0.4224, "rf": -0.0291, "lr": -0.2224}, "month": {"idf": 2.4338, "nb": -0.1748, "svm": -0.2625, "rf": -0.0217, "lr": -0.1829}, "attached": {"idf": 2.4608, "nb": -0.1622, "svm": -0.3426, "rf": -0.0296, "lr": -0.1895}, "meeting": {"idf": 2.4113, "nb": -0.1608, "svm": -0.3204, "rf": -0.0331, "lr": -0.187}, "online": {"idf": 2.4588, "nb": -0.1546, "svm": -0.2541, "rf": -0.0217, "lr": -0.1622}, "address": {"idf": 2.4272, "nb": -0.1573, "svm": -0.2429, "rf": -0.0233, "lr": -0.1653}, "today": {"idf": 2.3956, "nb": -0.1383, "svm": -0.3356, "rf": -0.0201, "lr": -0.1739}, "year": {"idf": 2.4434, "nb": -0.161, "svm": -0.3868, "rf": -0.0218, "lr": -0.1973}, "subject": {"idf": 1.0, "nb": -0.0519, "svm": -0.1121, "rf": -0.2838, "lr": -0.0838}, "body": {"idf": 1.0, "nb": -0.0519, "svm": -0.1121, "rf": -0.1714, "lr": -0.0838}}, "biases": {"nb": -0.0249, "svm": -0.1902, "rf": -0.15, "lr": -0.2743}};
+
+const SAMPLES = [
+  "Subject: quarterly forecast pipeline review | Body: please find attached the spreadsheet allocation for engineering deployment and board agenda compliance",
+  "Subject: monthly customer billing statement | Body: free webinar registration confirm your account notification preferences click href_link html_table discount offer schedule workshop committee",
+  "Subject: urgent winner guaranteed cash prize | Body: claim million dollars lottery beneficiary wire_transfer viagra cialis cheap pharmacy pills click below immediately",
+  "Subject: docusign_envelope sharepoint_shared action required | Body: mfa_push_token qr_code_verify remittance_advice_pdf ach_settlement reauthenticate_session zero_trust_gateway click confirm account immediately"
+];
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function sigmoid(z) {
+  if (z > 30) return 0.9999;
+  if (z < -30) return 0.0001;
+  return 1.0 / (1.0 + Math.exp(-z));
+}
+
+function classifyLiveEmail() {
+  const text = document.getElementById('emailInput').value.toLowerCase();
+  const tokens = text.match(/[a-z0-9_]{2,}/g) || [];
+  const counts = {};
+  tokens.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+
+  let normSq = 0;
+  const tfidf = {};
+  const matchedTokens = [];
+  for (const [tok, c] of Object.entries(counts)) {
+    if (PAYLOAD.vocab[tok]) {
+      const w = (1.0 + Math.log(c)) * PAYLOAD.vocab[tok].idf;
+      tfidf[tok] = w;
+      normSq += w * w;
+      matchedTokens.push(tok);
+    }
+  }
+  const norm = Math.sqrt(normSq) || 1.0;
+
+  let z_nb = PAYLOAD.biases.nb;
+  let z_svm = PAYLOAD.biases.svm;
+  let z_rf = PAYLOAD.biases.rf;
+  let z_lr = PAYLOAD.biases.lr;
+
+  for (const [tok, wRaw] of Object.entries(tfidf)) {
+    const x_i = wRaw / norm;
+    const v = PAYLOAD.vocab[tok];
+    z_nb += x_i * v.nb;
+    z_svm += x_i * v.svm;
+    z_rf += x_i * v.rf;
+    z_lr += x_i * v.lr;
+  }
+
+  const models = [
+    { name: "Multinomial Naive Bayes", prob: sigmoid(z_nb), tauB: 0.9196 },
+    { name: "Linear SVM (Platt Scaled)", prob: sigmoid(z_svm), tauB: 0.7912 },
+    { name: "Random Forest (B=100)", prob: sigmoid(z_rf), tauB: 0.8564 },
+    { name: "Logistic Regression (L2)", prob: sigmoid(z_lr), tauB: 0.6670 }
+  ];
+
+  const tbody = document.getElementById('liveClassifierBody');
+  tbody.innerHTML = models.map(m => {
+    const pA_spam = m.prob >= 0.50;
+    const pB_spam = m.prob >= m.tauB;
+    const badgeA = pA_spam ? `<span class="pill fail">SPAM (&ge;0.50)</span>` : `<span class="pill pass">HAM (&lt;0.50)</span>`;
+    const badgeB = pB_spam ? `<span class="pill fail">SPAM (&ge;${m.tauB})</span>` : `<span class="pill pass">HAM (&lt;${m.tauB})</span>`;
+    let diag = "Consistent classification across both protocols";
+    if (pA_spam && !pB_spam) {
+      diag = "<strong style='color:#047857;'>False Positive Prevented by SERC Calibration (&tau;*)!</strong>";
+    }
+    return `<tr>
+      <td><strong>${m.name}</strong></td>
+      <td><code>${m.prob.toFixed(4)}</code></td>
+      <td>${badgeA}</td>
+      <td><code>${m.tauB.toFixed(4)}</code></td>
+      <td>${badgeB}</td>
+      <td>${diag}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tokenWeightsBox').innerHTML =
+    `<strong>Active Vocabulary Features Matched (${matchedTokens.length}):</strong> <code>${matchedTokens.slice(0, 24).join(', ')}</code>`;
+}
+
+function loadSample(idx) {
+  document.getElementById('emailInput').value = SAMPLES[idx];
+  classifyLiveEmail();
+}
+
+function updateBenchmarkTable() {
+  const lam = parseInt(document.getElementById('lambdaSlider').value, 10);
+  document.getElementById('lambdaVal').textContent = lam;
+  document.getElementById('tcrHeader').textContent = `TCR (λ=${lam})`;
+
+  const tbody = document.getElementById('benchmarkTableBody');
+  tbody.innerHTML = PAYLOAD.benchmark.main_comparison.map(r => {
+    const tcr = (r.TP + r.FN) / (lam * r.FP + r.FN);
+    const tcrBadge = tcr >= 1.0
+      ? `<span class="pill pass">${tcr.toFixed(2)} (Pass)</span>`
+      : `<span class="pill fail">${tcr.toFixed(2)} (Fail)</span>`;
+    return `<tr>
+      <td><strong>${r.Classifier}</strong></td>
+      <td>${r.Protocol}</td>
+      <td><code>${r.tau.toFixed(4)}</code></td>
+      <td>${r.TP}</td>
+      <td>${r.TN}</td>
+      <td><strong>${r.FP}</strong></td>
+      <td>${r.FN}</td>
+      <td>${r.Accuracy_Pct.toFixed(2)}%</td>
+      <td>${r.Precision_Pct.toFixed(2)}%</td>
+      <td>${r.Recall_Pct.toFixed(2)}%</td>
+      <td><strong>${r.F1_Pct.toFixed(2)}%</strong></td>
+      <td>${r.MCC.toFixed(4)}</td>
+      <td>${r.ROC_AUC.toFixed(4)}</td>
+      <td><strong>${r.FPR_Pct.toFixed(2)}%</strong></td>
+      <td>${tcrBadge}</td>
+      <td><strong>${r.CARI.toFixed(4)}</strong></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderAblationTable() {
+  const tbody = document.getElementById('ablationTableBody');
+  tbody.innerHTML = PAYLOAD.benchmark.ablation_stages.map(r => {
+    const tcrBadge = r.TCR_99 >= 1.0
+      ? `<span class="pill pass">${r.TCR_99.toFixed(2)}</span>`
+      : `<span class="pill fail">${r.TCR_99.toFixed(2)}</span>`;
+    return `<tr>
+      <td><strong>${r.Classifier}</strong></td>
+      <td>${r.Stage}</td>
+      <td><code>${r.tau.toFixed(4)}</code></td>
+      <td>${r.TP}</td>
+      <td>${r.TN}</td>
+      <td>${r.FP}</td>
+      <td>${r.FN}</td>
+      <td>${r.Accuracy_Pct.toFixed(2)}%</td>
+      <td><strong>${r.F1_Pct.toFixed(2)}%</strong></td>
+      <td>${r.MCC.toFixed(4)}</td>
+      <td>${r.FPR_Pct.toFixed(2)}%</td>
+      <td>${tcrBadge}</td>
+      <td><strong>${r.CARI.toFixed(4)}</strong></td>
+    </tr>`;
+  }).join('');
+}
+
+const SERC_CRITERIA = [
+  "C1: Dataset Provenance & Deduplication",
+  "C2: Leak-Free Preprocessing Isolation",
+  "C3: Partitioning & Chronological Validation",
+  "C4: Model & Hyperparameter Disclosure",
+  "C5: Imbalance-Aware Metrics (MCC/AUC)",
+  "C6: Explicit False Positive Rate (FPR)",
+  "C7: Cost-Sensitive Threshold Calibration",
+  "C8: Temporal or Cross-Corpus Drift Testing",
+  "C9: Software Env & Public Code Repository",
+  "C10: Threats to Validity & Limitations"
+];
+
+function initSERCCalculator() {
+  const container = document.getElementById('sercInputsContainer');
+  container.innerHTML = SERC_CRITERIA.map((name, i) => `
+    <div class="serc-row">
+      <span style="font-size:12.5px; font-weight:600;">${name}</span>
+      <select id="serc_c_${i}" onchange="recalcSERC()">
+        <option value="1.0" ${i < 5 ? 'selected' : ''}>Reported (1.0)</option>
+        <option value="0.5" ${i >= 5 && i < 7 ? 'selected' : ''}>Partial (0.5)</option>
+        <option value="0.0" ${i >= 7 ? 'selected' : ''}>Not Reported (0.0)</option>
+      </select>
+    </div>
+  `).join('');
+  recalcSERC();
+}
+
+function recalcSERC() {
+  let sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseFloat(document.getElementById(`serc_c_${i}`).value);
+  }
+  const rcs = (sum / 10.0) * 100.0;
+  const f1 = parseFloat(document.getElementById('calcF1').value) || 0;
+  const fpr = parseFloat(document.getElementById('calcFPR').value) || 0;
+  const cari = f1 * Math.max(0, 1.0 - 2.0 * fpr) * (0.5 + 0.5 * (rcs / 100.0));
+  let tier = "Tier D (Critically Unverifiable)";
+  if (rcs >= 80) tier = "Tier A (Audit-Ready & Reproducible)";
+  else if (rcs >= 60) tier = "Tier B (Moderately Transparent)";
+  else if (rcs >= 40) tier = "Tier C (High Leakage / FPR Risk)";
+
+  document.getElementById('sercResultBox').innerHTML =
+    `RCS: <span style="color:var(--accent);">${rcs.toFixed(1)}%</span> (${tier}) &nbsp;|&nbsp; CARI Score: <span style="color:var(--emerald);">${cari.toFixed(4)}</span>`;
+}
+
+function renderAuditMatrix() {
+  const fmt = v => v === 1.0 ? 'R' : (v === 0.5 ? 'P' : 'NR');
+  const tbody = document.getElementById('auditMatrixBody');
+  tbody.innerHTML = PAYLOAD.studies.map(s => `
+    <tr>
+      <td>${s.Study_ID}</td>
+      <td><strong>${s.Study}</strong></td>
+      <td>${s.Era}</td>
+      <td>${s.Primary_Dataset}</td>
+      <td>${fmt(s.C1)}</td><td>${fmt(s.C2)}</td><td>${fmt(s.C3)}</td><td>${fmt(s.C4)}</td><td>${fmt(s.C5)}</td>
+      <td><strong>${fmt(s.C6)}</strong></td><td><strong>${fmt(s.C7)}</strong></td><td>${fmt(s.C8)}</td><td>${fmt(s.C9)}</td><td>${fmt(s.C10)}</td>
+      <td><strong>${s.RCS_Pct.toFixed(1)}%</strong></td>
+      <td><span class="pill ${s.RCS_Pct >= 60 ? 'pass' : 'warn'}">${s.Tier}</span></td>
+    </tr>
+  `).join('');
+}
+
+loadSample(1);
+updateBenchmarkTable();
+renderAblationTable();
+initSERCCalculator();
+renderAuditMatrix();
+</script>
+</body>
+</html>
