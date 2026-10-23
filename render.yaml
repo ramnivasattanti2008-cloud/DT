@@ -1,0 +1,31 @@
+services:
+  # Python ML Backend Service
+  - type: web
+    name: serc-rcs-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "PYTHONPATH=backend uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: APP_NAME
+        value: "SERC-RCS Research Lab"
+      - key: ENVIRONMENT
+        value: "production"
+
+  # Next.js Frontend Service
+  - type: web
+    name: serc-rcs-frontend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: "cd frontend && npm install && npm run build"
+    startCommand: "cd frontend && npm run start"
+    envVars:
+      - key: NODE_ENV
+        value: "production"
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          type: web
+          name: serc-rcs-backend
+          property: host

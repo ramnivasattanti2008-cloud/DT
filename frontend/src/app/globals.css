@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #FFFFFF;
+  --bg-subtle: #F7F7F7;
+  --bg-secondary: #F0F0F0;
+  --bg-dark: #0A0A0A;
+  --border-light: #E5E5E5;
+  --border-hairline: #EEEEEE;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --text-muted: #888888;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Accessible focus states */
+  *:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 2px;
+  }
+}
+
+/* Monochrome hairline tables */
+.table-monochrome {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table-monochrome th {
+  background-color: #F7F7F7;
+  color: #666666;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 10px 14px;
+  border-bottom: 1px solid #E5E5E5;
+  text-align: left;
+}
+
+.table-monochrome td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #EEEEEE;
+  color: #111111;
+}
+
+.table-monochrome tr:hover td {
+  background-color: #FAFAFA;
+}
+
+/* Custom scrollbar in monochrome */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAFAFA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D1D1D1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
