@@ -218,7 +218,9 @@ export default function DatasetLaboratoryPage() {
               <MetricsCard
                 label="Timestamp Horizon"
                 value={
-                  selectedDataset.validation_summary.has_valid_timestamps
+                  selectedDataset.validation_summary?.has_valid_timestamps
+                    ? "Chronological"
+                    : selectedDataset.min_timestamp
                     ? "Chronological"
                     : "No Timestamps"
                 }
@@ -235,14 +237,14 @@ export default function DatasetLaboratoryPage() {
               <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-[#111111] mb-2">
                 Dataset Validity &amp; Methodological Notes
               </h3>
-              {selectedDataset.validation_summary.warnings.length === 0 ? (
+              {(!selectedDataset.validation_summary?.warnings || selectedDataset.validation_summary.warnings.length === 0) ? (
                 <div className="flex items-center gap-2 text-xs text-[#111111]">
                   <CheckCircle2 size={15} />
                   <span>No validity warnings. Dataset satisfies pre-split verification checks.</span>
                 </div>
               ) : (
                 <div className="space-y-1.5">
-                  {selectedDataset.validation_summary.warnings.map((w, idx) => (
+                  {(selectedDataset.validation_summary.warnings || []).map((w, idx) => (
                     <div key={idx} className="flex items-start gap-2 text-xs text-[#333333]">
                       <AlertTriangle size={14} className="mt-0.5 flex-shrink-0 text-[#111111]" />
                       <span>{w}</span>
@@ -260,19 +262,19 @@ export default function DatasetLaboratoryPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
                 <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
                   <div className="text-[10px] text-[#888888]">TEXT COLUMN</div>
-                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping.text_col || "text"}</div>
+                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping?.text_col || "text"}</div>
                 </div>
                 <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
                   <div className="text-[10px] text-[#888888]">LABEL COLUMN</div>
-                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping.label_col || "label"}</div>
+                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping?.label_col || "label"}</div>
                 </div>
                 <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
                   <div className="text-[10px] text-[#888888]">TIMESTAMP COLUMN</div>
-                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping.timestamp_col || "timestamp"}</div>
+                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping?.timestamp_col || "timestamp"}</div>
                 </div>
                 <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
                   <div className="text-[10px] text-[#888888]">ID COLUMN</div>
-                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping.id_col || "id"}</div>
+                  <div className="font-bold text-[#111111] mt-0.5">{selectedDataset.column_mapping?.id_col || "id"}</div>
                 </div>
               </div>
             </div>

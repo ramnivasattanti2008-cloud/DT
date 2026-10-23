@@ -164,28 +164,28 @@ function ReportsContent() {
             <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
               <div className="text-[10px] text-[#888888]">RCS TRANSPARENCY</div>
               <div className="font-bold text-base text-[#111111] mt-0.5">
-                {selectedExp.rcs_percentage !== null ? `${selectedExp.rcs_percentage}%` : "N/A"}
+                {selectedExp.rcs_percentage != null ? `${selectedExp.rcs_percentage}%` : "N/A"}
               </div>
-              <div className="text-[10px] text-[#666666]">{selectedExp.quality_tier}</div>
+              <div className="text-[10px] text-[#666666]">{selectedExp.quality_tier || "N/A"}</div>
             </div>
             <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
               <div className="text-[10px] text-[#888888]">CARI REPRODUCIBILITY</div>
               <div className="font-bold text-base text-[#111111] mt-0.5">
-                {selectedExp.cari_score !== null ? selectedExp.cari_score.toFixed(4) : "N/A"}
+                {selectedExp.cari_score != null ? selectedExp.cari_score.toFixed(4) : "N/A"}
               </div>
               <div className="text-[10px] text-[#666666]">Score &isin; [0, 1]</div>
             </div>
             <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
               <div className="text-[10px] text-[#888888]">FALSE ALARMS (FPR)</div>
               <div className="font-bold text-base text-[#111111] mt-0.5">
-                {selectedExp.best_fpr !== null ? `${(selectedExp.best_fpr * 100).toFixed(2)}%` : "N/A"}
+                {selectedExp.best_fpr != null ? `${(selectedExp.best_fpr * 100).toFixed(2)}%` : "N/A"}
               </div>
-              <div className="text-[10px] text-[#666666]">Target: &le;{(selectedExp.target_fpr * 100).toFixed(2)}%</div>
+              <div className="text-[10px] text-[#666666]">Target: &le;{(selectedExp.target_fpr != null ? (selectedExp.target_fpr * 100).toFixed(2) : "0.35")}%</div>
             </div>
             <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
               <div className="text-[10px] text-[#888888]">TOTAL COST RATIO (99)</div>
               <div className="font-bold text-base text-[#111111] mt-0.5">
-                {selectedExp.best_tcr !== null ? selectedExp.best_tcr.toFixed(2) : "N/A"}
+                {selectedExp.best_tcr != null ? selectedExp.best_tcr.toFixed(2) : "N/A"}
               </div>
               <div className="text-[10px] text-[#666666]">Break-even: 1.0</div>
             </div>
@@ -233,7 +233,7 @@ function ReportsContent() {
                   return (
                     <tr key={m.model_key}>
                       <td className="font-bold font-sans text-xs text-[#111111]">{m.display_name}</td>
-                      <td>{m.threshold.toFixed(4)}</td>
+                      <td>{m.threshold != null ? m.threshold.toFixed(4) : "0.5000"}</td>
                       <td>{met.tp}</td>
                       <td>{met.tn}</td>
                       <td>{met.fp}</td>
@@ -266,7 +266,7 @@ function ReportsContent() {
                 tn={bestModel.metrics.tn}
                 fp={bestModel.metrics.fp}
                 fn={bestModel.metrics.fn}
-                title={`Confusion Matrix: ${bestModel.display_name} (Threshold tau = ${bestModel.threshold.toFixed(4)})`}
+                title={`Confusion Matrix: ${bestModel.display_name} (Threshold tau = ${bestModel.threshold != null ? bestModel.threshold.toFixed(4) : "0.5000"})`}
                 subtitle={`N_test = ${(bestModel.metrics.tp + bestModel.metrics.tn + bestModel.metrics.fp + bestModel.metrics.fn).toLocaleString()} test emails evaluated`}
               />
             </div>

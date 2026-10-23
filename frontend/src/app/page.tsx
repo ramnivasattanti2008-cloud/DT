@@ -274,12 +274,12 @@ export default function OverviewPage() {
                           {exp.is_safe ? "SAFE" : "UNSAFE"}
                         </span>
                       </td>
-                      <td>{exp.rcs_percentage !== null ? `${exp.rcs_percentage.toFixed(0)}%` : "N/A"}</td>
+                      <td>{exp.rcs_percentage != null ? `${exp.rcs_percentage.toFixed(0)}%` : "N/A"}</td>
                       <td>{exp.quality_tier || "N/A"}</td>
-                      <td>{exp.best_f1 !== null ? `${(exp.best_f1 * 100).toFixed(2)}%` : "N/A"}</td>
-                      <td>{exp.best_fpr !== null ? `${(exp.best_fpr * 100).toFixed(2)}%` : "N/A"}</td>
-                      <td>{exp.best_tcr !== null ? exp.best_tcr.toFixed(2) : "N/A"}</td>
-                      <td>{exp.cari_score !== null ? exp.cari_score.toFixed(4) : "N/A"}</td>
+                      <td>{exp.best_f1 != null ? `${(exp.best_f1 * 100).toFixed(2)}%` : "N/A"}</td>
+                      <td>{exp.best_fpr != null ? `${(exp.best_fpr * 100).toFixed(2)}%` : "N/A"}</td>
+                      <td>{exp.best_tcr != null ? exp.best_tcr.toFixed(2) : "N/A"}</td>
+                      <td>{exp.cari_score != null ? exp.cari_score.toFixed(4) : "N/A"}</td>
                       <td className="text-[11px] text-[#666666]">
                         {new Date(exp.created_at).toLocaleDateString()}
                       </td>
