@@ -10,6 +10,7 @@ export default function ClassifierPage() {
   const [inputText, setInputText] = useState("");
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [interactiveCutoff, setInteractiveCutoff] = useState<number>(0.75);
 
   useEffect(() => {
     fetchSampleEmails().then((s) => {
@@ -179,6 +180,67 @@ export default function ClassifierPage() {
         {/* Live Multi-Model Decision Table */}
         {result && (
           <div className="space-y-6">
+            {/* Interactive Decision Threshold Simulator */}
+            <div className="border border-[#111111] rounded p-5 bg-[#FAFAFA] space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[#666666] font-bold">
+                    Interactive Threshold Tuning Simulator
+                  </div>
+                  <h3 className="text-sm font-bold text-[#111111]">
+                    Test Custom Operating Cutoff (&tau; = {interactiveCutoff.toFixed(2)})
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setInteractiveCutoff(0.50)}
+                    className={`px-2.5 py-1 text-xs font-mono rounded border transition ${
+                      interactiveCutoff === 0.50 ? "bg-[#111111] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111] hover:bg-[#E5E5E5]"
+                    }`}
+                  >
+                    Naive 0.50
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInteractiveCutoff(0.79)}
+                    className={`px-2.5 py-1 text-xs font-mono rounded border transition ${
+                      interactiveCutoff === 0.79 ? "bg-[#111111] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111] hover:bg-[#E5E5E5]"
+                    }`}
+                  >
+                    SVM &tau;* (0.79)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInteractiveCutoff(0.92)}
+                    className={`px-2.5 py-1 text-xs font-mono rounded border transition ${
+                      interactiveCutoff === 0.92 ? "bg-[#111111] text-[#FFFFFF]" : "bg-[#FFFFFF] text-[#111111] hover:bg-[#E5E5E5]"
+                    }`}
+                  >
+                    NB &tau;* (0.92)
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <input
+                  type="range"
+                  min="0.05"
+                  max="0.99"
+                  step="0.01"
+                  value={interactiveCutoff}
+                  onChange={(e) => setInteractiveCutoff(parseFloat(e.target.value))}
+                  className="w-full accent-[#111111] cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] font-mono text-[#888888]">
+                  <span>0.05 (High False Alarm Risk)</span>
+                  <span>0.50 (Default Naive)</span>
+                  <span>0.92 (SERC False-Alarm Protected)</span>
+                  <span>0.99</span>
+                </div>
+              </div>
+            </div>
+
             <div className="border border-[#E5E5E5] rounded p-5 bg-[#FFFFFF]">
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -186,7 +248,7 @@ export default function ClassifierPage() {
                     Multi-Model Decision &amp; Operational Comparison
                   </h3>
                   <p className="text-xs text-[#666666]">
-                    Comparing Protocol A symmetric cutoff (&tau; = 0.50) vs Protocol B calibrated cutoff (&tau;*).
+                    Comparing Protocol A symmetric cutoff (&tau; = 0.50), Protocol B calibrated cutoff (&tau;*), and your custom slider (&tau; = {interactiveCutoff.toFixed(2)}).
                   </p>
                 </div>
               </div>
@@ -200,6 +262,7 @@ export default function ClassifierPage() {
                       <th>Protocol A (&tau; = 0.50)</th>
                       <th>Calibrated &tau;*</th>
                       <th>Protocol B (&tau; = &tau;*)</th>
+                      <th>Custom (&tau; = {interactiveCutoff.toFixed(2)})</th>
                       <th>Operational Diagnostic</th>
                     </tr>
                   </thead>
@@ -208,6 +271,7 @@ export default function ClassifierPage() {
                       const prob = p.predicted_probability;
                       const isProtoASpam = prob >= 0.50;
                       const isProtoBSpam = p.predicted_label === "spam";
+                      const isCustomSpam = prob >= interactiveCutoff;
                       const isPreventedFP = isProtoASpam && !isProtoBSpam;
 
                       return (
@@ -237,6 +301,17 @@ export default function ClassifierPage() {
                               }`}
                             >
                               {isProtoBSpam ? "SPAM (>=tau*)" : "HAM (<tau*)"}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[10px] border ${
+                                isCustomSpam
+                                  ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
+                                  : "border-[#555555] bg-[#FFFFFF] text-[#111111]"
+                              }`}
+                            >
+                              {isCustomSpam ? "SPAM" : "HAM"}
                             </span>
                           </td>
                           <td className="font-sans text-xs">

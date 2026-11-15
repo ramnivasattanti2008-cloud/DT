@@ -15,6 +15,8 @@ import {
   ShieldAlert,
   Calendar,
   Layers,
+  Copy,
+  Check,
 } from "lucide-react";
 
 function ReportsContent() {
@@ -23,6 +25,7 @@ function ReportsContent() {
 
   const [experiments, setExperiments] = useState<Experiment[]>([]);
   const [selectedExp, setSelectedExp] = useState<Experiment | null>(null);
+  const [copiedBibtex, setCopiedBibtex] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -327,6 +330,48 @@ function ReportsContent() {
           <p>
             4. <strong>Archive Horizon and Live Traffic:</strong> The 6,000-message testbed corpus models executive email phrasing, retail invoice hard-ham overlap, 8.0% duplicate campaign bursts, and Q4 cloud credential drift. Because large ISP relays handle millions of daily messages with non-stationary drift, production deployments should combine chronological splits with continuous sliding-window evaluations.
           </p>
+        </div>
+
+        {/* Section 6: Official Publication Citation & BibTeX */}
+        <div className="border border-[#111111] rounded p-6 bg-[#FAFAFA] space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
+                Section 6 &bull; Publication Provenance &amp; Citation (SERC Item C9)
+              </span>
+              <h3 className="text-sm font-bold text-[#111111]">
+                Attanti, Shreya, &amp; Sarwar (2026) Manuscript Citation
+              </h3>
+            </div>
+            <button
+              onClick={() => {
+                const bib = `@article{attanti2026inspecting,
+  author      = {Attanti, R. and Shreya, P. and Sarwar, M. N.},
+  title       = {Inspecting Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric},
+  institution = {CSBS Department, School of Engineering, Jain University, Bengaluru, Karnataka 560069, India},
+  year        = {2026},
+  note        = {Corresponding author: M. N. Sarwar (nadeem.sarwar@jainuniversity.ac.in)}
+}`;
+                navigator.clipboard.writeText(bib);
+                setCopiedBibtex(true);
+                setTimeout(() => setCopiedBibtex(false), 2000);
+              }}
+              className="px-3 py-1.5 text-xs font-mono font-medium rounded border border-[#111111] bg-[#111111] text-[#FFFFFF] hover:bg-[#333333] transition flex items-center gap-1.5"
+            >
+              {copiedBibtex ? <Check size={13} /> : <Copy size={13} />}
+              <span>{copiedBibtex ? "Copied!" : "Copy BibTeX"}</span>
+            </button>
+          </div>
+
+          <pre className="p-3 bg-[#FFFFFF] border border-[#E5E5E5] rounded text-[11px] font-mono text-[#333333] overflow-x-auto">
+{`@article{attanti2026inspecting,
+  author      = {Attanti, R. and Shreya, P. and Sarwar, M. N.},
+  title       = {Inspecting Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric},
+  institution = {CSBS Department, School of Engineering, Jain University, Bengaluru, Karnataka 560069, India},
+  year        = {2026},
+  note        = {Corresponding author: M. N. Sarwar (nadeem.sarwar@jainuniversity.ac.in)}
+}`}
+          </pre>
         </div>
       </div>
     </div>
