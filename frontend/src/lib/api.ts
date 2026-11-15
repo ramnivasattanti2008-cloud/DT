@@ -25,6 +25,12 @@ export async function fetchDataset(id: string): Promise<Dataset> {
   return res.json();
 }
 
+export async function fetchDatasetPreview(id: string, limit: number = 25): Promise<any> {
+  const res = await fetch(`${API_BASE}/datasets/${id}/preview?limit=${limit}`);
+  if (!res.ok) throw new Error("Failed to load dataset preview");
+  return res.json();
+}
+
 export async function createSyntheticBenchmark(): Promise<Dataset> {
   const res = await fetch(`${API_BASE}/datasets/generate-synthetic`, {
     method: "POST",

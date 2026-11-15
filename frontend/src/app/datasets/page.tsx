@@ -3,18 +3,25 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import MetricsCard from "@/components/MetricsCard";
-import { fetchDatasets, createSyntheticBenchmark, uploadDataset } from "@/lib/api";
+import { fetchDatasets, createSyntheticBenchmark, uploadDataset, fetchDatasetPreview } from "@/lib/api";
 import { Dataset } from "@/lib/types";
 import {
   Upload,
   Database,
-  FileSpreadsheet,
   Download,
   AlertTriangle,
   CheckCircle2,
   RefreshCw,
   Sparkles,
   Search,
+  Mail,
+  ChevronDown,
+  ChevronUp,
+  Filter,
+  Copy,
+  Check,
+  ShieldCheck,
+  Layers,
 } from "lucide-react";
 
 export default function DatasetLaboratoryPage() {
@@ -26,12 +33,20 @@ export default function DatasetLaboratoryPage() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [benchmarkFilter, setBenchmarkFilter] = useState("");
 
+  // Live Sample Email Explorer state
+  const [sampleEmails, setSampleEmails] = useState<any[]>([]);
+  const [sampleLoading, setSampleLoading] = useState(false);
+  const [sampleFilter, setSampleFilter] = useState<"ALL" | "HAM" | "SPAM" | "DUPLICATES">("ALL");
+  const [sampleSearch, setSampleSearch] = useState("");
+  const [expandedEmailId, setExpandedEmailId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
   const loadData = () => {
     setLoading(true);
     fetchDatasets()
       .then((data) => {
-        setDatasets(data);
-        if (data.length > 0 && !selectedDataset) {
+        setDatasets(data || []);
+        if (data && data.length > 0 && !selectedDataset) {
           setSelectedDataset(data[0]);
         }
         setLoading(false);
@@ -42,6 +57,21 @@ export default function DatasetLaboratoryPage() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (selectedDataset?.id) {
+      setSampleLoading(true);
+      fetchDatasetPreview(selectedDataset.id, 50)
+        .then((res) => {
+          setSampleEmails(res.sample_rows || []);
+          setSampleLoading(false);
+        })
+        .catch(() => {
+          setSampleEmails([]);
+          setSampleLoading(false);
+        });
+    }
+  }, [selectedDataset?.id]);
 
   const handleGenerateSynthetic = async () => {
     setGenerating(true);
@@ -76,6 +106,31 @@ export default function DatasetLaboratoryPage() {
     }
   };
 
+  const copyToClipboard = (text: string, id: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  // Filtered sample emails
+  const filteredSamples = sampleEmails.filter((email) => {
+    const isSpam = String(email.label).toLowerCase() === "spam" || email.label === 1 || email.label === "1";
+    const isDup = email.is_duplicate === true || email.is_duplicate === "true" || email.is_duplicate === 1;
+
+    if (sampleFilter === "HAM" && isSpam) return false;
+    if (sampleFilter === "SPAM" && !isSpam) return false;
+    if (sampleFilter === "DUPLICATES" && !isDup) return false;
+
+    if (sampleSearch.trim()) {
+      const q = sampleSearch.toLowerCase();
+      const matchText = (email.text || "").toLowerCase().includes(q);
+      const matchSubj = (email.subject || "").toLowerCase().includes(q);
+      const matchId = (email.id || "").toLowerCase().includes(q);
+      if (!matchText && !matchSubj && !matchId) return false;
+    }
+    return true;
+  });
+
   return (
     <div className="min-h-screen bg-[#FFFFFF]">
       <Header
@@ -85,27 +140,29 @@ export default function DatasetLaboratoryPage() {
           <button
             onClick={handleGenerateSynthetic}
             disabled={generating}
-            className="px-3.5 py-1.5 text-xs font-medium rounded bg-[#111111] text-[#FFFFFF] hover:bg-[#333333] transition-colors flex items-center gap-1.5 disabled:opacity-50"
+            className="px-3.5 py-1.5 text-xs font-mono font-medium rounded bg-[#111111] text-[#FFFFFF] hover:bg-[#333333] transition-colors flex items-center gap-1.5 disabled:opacity-50"
           >
             <Sparkles size={14} />
-            <span>{generating ? "Generating Benchmark..." : "Load Synthetic Benchmark (6k Emails)"}</span>
+            <span>{generating ? "Generating..." : "Load Synthetic Benchmark (6k Emails)"}</span>
           </button>
         }
       />
 
       <div className="p-8 max-w-7xl mx-auto space-y-8">
-        {/* Upload and Dataset Selector Bar */}
+        {/* ============================================================== */}
+        {/* 1. UPLOAD & DATASET SELECTION ROW                              */}
+        {/* ============================================================== */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* File Upload Dropzone */}
+          {/* File Upload Box */}
           <div className="border border-dashed border-[#CCCCCC] rounded p-5 bg-[#FAFAFA] flex flex-col justify-center items-center text-center">
-            <Upload size={24} className="text-[#666666] mb-2" />
-            <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wider mb-1">
+            <Upload size={22} className="text-[#666666] mb-2" />
+            <h3 className="text-xs font-bold font-mono text-[#111111] uppercase tracking-wider mb-1">
               Upload Custom Email Corpus
             </h3>
             <p className="text-[11px] text-[#666666] mb-3">
               CSV with text and label columns. Maximum 50MB.
             </p>
-            <label className="px-3 py-1.5 text-xs font-medium border border-[#111111] bg-[#FFFFFF] text-[#111111] rounded hover:bg-[#F0F0F0] cursor-pointer transition-colors">
+            <label className="px-3.5 py-1.5 text-xs font-mono font-medium border border-[#111111] bg-[#FFFFFF] text-[#111111] rounded hover:bg-[#F0F0F0] cursor-pointer transition-colors">
               {uploading ? "Processing CSV..." : "Select CSV File"}
               <input
                 type="file"
@@ -122,16 +179,16 @@ export default function DatasetLaboratoryPage() {
             )}
           </div>
 
-          {/* Dataset Selector */}
+          {/* Dataset Switcher */}
           <div className="md:col-span-2 border border-[#E5E5E5] rounded p-5 bg-[#FFFFFF] flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#666666]">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#666666] font-bold">
                   Active Research Datasets ({datasets.length})
                 </span>
                 <button
                   onClick={loadData}
-                  className="text-xs text-[#666666] hover:text-[#111111] flex items-center gap-1"
+                  className="text-xs text-[#666666] hover:text-[#111111] flex items-center gap-1 font-mono"
                 >
                   <RefreshCw size={12} />
                   <span>Refresh</span>
@@ -139,46 +196,69 @@ export default function DatasetLaboratoryPage() {
               </div>
 
               {datasets.length === 0 ? (
-                <p className="text-xs text-[#888888] py-4">
+                <p className="text-xs text-[#888888] py-4 font-mono">
                   No datasets loaded. Click &quot;Load Synthetic Benchmark&quot; to begin.
                 </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                  {datasets.map((ds) => (
-                    <button
-                      key={ds.id}
-                      onClick={() => setSelectedDataset(ds)}
-                      className={`p-3 rounded border text-left text-xs transition-colors ${
-                        selectedDataset?.id === ds.id
-                          ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
-                          : "border-[#E5E5E5] bg-[#FFFFFF] text-[#111111] hover:bg-[#F7F7F7]"
-                      }`}
-                    >
-                      <div className="font-bold truncate">{ds.name}</div>
-                      <div
-                        className={`text-[10px] font-mono mt-1 ${
-                          selectedDataset?.id === ds.id ? "text-[#CCCCCC]" : "text-[#666666]"
+                  {datasets.map((ds) => {
+                    const isSelected = selectedDataset?.id === ds.id;
+                    const hamRatio = ((ds.ham_count / (ds.row_count || 1)) * 100).toFixed(0);
+                    const spamRatio = ((ds.spam_count / (ds.row_count || 1)) * 100).toFixed(0);
+
+                    return (
+                      <button
+                        key={ds.id}
+                        type="button"
+                        onClick={() => setSelectedDataset(ds)}
+                        className={`p-3 rounded border text-left text-xs transition-colors flex flex-col justify-between ${
+                          isSelected
+                            ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
+                            : "border-[#E5E5E5] bg-[#FFFFFF] text-[#111111] hover:bg-[#F7F7F7]"
                         }`}
                       >
-                        {ds.row_count.toLocaleString()} rows &bull; {ds.is_synthetic ? "SYNTHETIC" : "REAL UPLOAD"}
-                      </div>
-                    </button>
-                  ))}
+                        <div>
+                          <div className="font-bold truncate">{ds.name}</div>
+                          <div
+                            className={`text-[10px] font-mono mt-1 ${
+                              isSelected ? "text-[#CCCCCC]" : "text-[#666666]"
+                            }`}
+                          >
+                            {(ds.row_count || 0).toLocaleString()} rows &bull; {ds.is_synthetic ? "SYNTHETIC" : "REAL UPLOAD"}
+                          </div>
+                        </div>
+
+                        {/* Distribution Indicator */}
+                        <div className="mt-2.5 space-y-1">
+                          <div className="w-full h-1.5 bg-[#DDDDDD] rounded overflow-hidden flex">
+                            <div style={{ width: `${hamRatio}%` }} className="bg-[#666666]" title={`Ham: ${hamRatio}%`} />
+                            <div style={{ width: `${spamRatio}%` }} className="bg-[#111111]" title={`Spam: ${spamRatio}%`} />
+                          </div>
+                          <div className={`text-[9px] font-mono flex justify-between ${isSelected ? "text-[#BBBBBB]" : "text-[#888888]"}`}>
+                            <span>Ham: {hamRatio}%</span>
+                            <span>Spam: {spamRatio}%</span>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Selected Dataset Inspection */}
+        {/* ============================================================== */}
+        {/* 2. SELECTED DATASET METRICS & SUMMARY                          */}
+        {/* ============================================================== */}
         {selectedDataset && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E5E5E5] pb-3">
               <div>
                 <h2 className="text-base font-bold text-[#111111]">
                   {selectedDataset.name}
                 </h2>
-                <div className="text-xs text-[#666666] font-mono mt-0.5 flex items-center gap-3">
+                <div className="text-xs text-[#666666] font-mono mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                   <span>ID: {selectedDataset.id}</span>
                   <span>&bull;</span>
                   <span>File: {selectedDataset.filename}</span>
@@ -191,7 +271,7 @@ export default function DatasetLaboratoryPage() {
 
               <a
                 href={`/api/datasets/${selectedDataset.id}/export`}
-                className="px-3 py-1.5 text-xs font-medium border border-[#CCCCCC] rounded hover:bg-[#F0F0F0] text-[#111111] flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-1.5 text-xs font-mono font-medium border border-[#CCCCCC] rounded hover:bg-[#F0F0F0] text-[#111111] flex items-center gap-1.5 transition-colors self-start sm:self-auto"
               >
                 <Download size={13} />
                 <span>Export Sanitized CSV</span>
@@ -201,20 +281,20 @@ export default function DatasetLaboratoryPage() {
             {/* Metrics Breakdown Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <MetricsCard
-                label="Total Message Count (N)"
-                value={selectedDataset.row_count.toLocaleString()}
+                label="Total Messages (N)"
+                value={(selectedDataset.row_count || 0).toLocaleString()}
                 subtitle="Complete email pool size"
               />
               <MetricsCard
                 label="Class Distribution"
-                value={`${selectedDataset.ham_count.toLocaleString()} / ${selectedDataset.spam_count.toLocaleString()}`}
-                subtitle={`Ham: ${((selectedDataset.ham_count / (selectedDataset.row_count || 1)) * 100).toFixed(1)}% | Spam: ${((selectedDataset.spam_count / (selectedDataset.row_count || 1)) * 100).toFixed(1)}%`}
+                value={`${(selectedDataset.ham_count || 0).toLocaleString()} / ${(selectedDataset.spam_count || 0).toLocaleString()}`}
+                subtitle={`Ham: ${(((selectedDataset.ham_count || 0) / (selectedDataset.row_count || 1)) * 100).toFixed(1)}% | Spam: ${(((selectedDataset.spam_count || 0) / (selectedDataset.row_count || 1)) * 100).toFixed(1)}%`}
                 badge="Ham / Spam"
               />
               <MetricsCard
                 label="Duplicate Density"
-                value={selectedDataset.duplicate_count.toLocaleString()}
-                subtitle={`${((selectedDataset.duplicate_count / (selectedDataset.row_count || 1)) * 100).toFixed(1)}% duplicate campaign bursts`}
+                value={(selectedDataset.duplicate_count || 0).toLocaleString()}
+                subtitle={`${(((selectedDataset.duplicate_count || 0) / (selectedDataset.row_count || 1)) * 100).toFixed(1)}% duplicate campaign bursts`}
                 badge="Pre-Split Audit"
               />
               <MetricsCard
@@ -232,6 +312,183 @@ export default function DatasetLaboratoryPage() {
                     : "Timestamps unavailable"
                 }
               />
+            </div>
+
+            {/* ============================================================== */}
+            {/* 3. LIVE EMAIL CORPUS EXPLORER (ACTUAL EMAIL ROW INSPECTOR)     */}
+            {/* ============================================================== */}
+            <div className="border border-[#111111] rounded p-6 bg-[#FFFFFF] space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#EEEEEE] pb-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono px-2 py-0.5 bg-[#111111] text-[#FFFFFF] rounded uppercase font-bold tracking-wider">
+                      Live Data Inspector
+                    </span>
+                    <span className="text-xs text-[#666666] font-mono">
+                      Inspect Raw Email Payloads
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-bold text-[#111111] mt-1">
+                    Sample Message Explorer ({filteredSamples.length} showing of {sampleEmails.length} loaded)
+                  </h3>
+                </div>
+
+                {/* Search Bar */}
+                <div className="relative w-full md:w-64">
+                  <Search size={14} className="absolute left-2.5 top-2.5 text-[#888888]" />
+                  <input
+                    type="text"
+                    value={sampleSearch}
+                    onChange={(e) => setSampleSearch(e.target.value)}
+                    placeholder="Search subject or text..."
+                    className="w-full pl-8 pr-3 py-1.5 text-xs font-mono border border-[#CCCCCC] rounded bg-[#FAFAFA] text-[#111111] focus:border-[#111111] focus:bg-[#FFFFFF]"
+                  />
+                </div>
+              </div>
+
+              {/* Filter Tabs */}
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  { key: "ALL", label: `All (${sampleEmails.length})` },
+                  {
+                    key: "HAM",
+                    label: `Ham Only (${sampleEmails.filter((s) => String(s.label).toLowerCase() === "ham" || s.label === 0).length})`,
+                  },
+                  {
+                    key: "SPAM",
+                    label: `Spam Only (${sampleEmails.filter((s) => String(s.label).toLowerCase() === "spam" || s.label === 1).length})`,
+                  },
+                  {
+                    key: "DUPLICATES",
+                    label: `Duplicate Bursts (${sampleEmails.filter((s) => s.is_duplicate === true || s.is_duplicate === 1).length})`,
+                  },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setSampleFilter(tab.key as any)}
+                    className={`px-3 py-1 text-xs font-mono rounded border transition-colors ${
+                      sampleFilter === tab.key
+                        ? "border-[#111111] bg-[#111111] text-[#FFFFFF] font-bold"
+                        : "border-[#E5E5E5] bg-[#FAFAFA] text-[#444444] hover:bg-[#EAEAEA]"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Sample Table */}
+              {sampleLoading ? (
+                <div className="p-8 text-center text-xs font-mono text-[#888888]">
+                  Loading email samples from dataset...
+                </div>
+              ) : filteredSamples.length === 0 ? (
+                <div className="p-8 text-center text-xs font-mono text-[#888888] border border-dashed border-[#E5E5E5] rounded">
+                  No sample messages matching filter &quot;{sampleFilter}&quot;.
+                </div>
+              ) : (
+                <div className="overflow-x-auto border border-[#E5E5E5] rounded">
+                  <table className="table-monochrome w-full">
+                    <thead>
+                      <tr>
+                        <th style={{ width: "12%" }}>Message ID</th>
+                        <th style={{ width: "12%" }}>Label</th>
+                        <th style={{ width: "16%" }}>Timestamp</th>
+                        <th style={{ width: "14%" }}>Audit Status</th>
+                        <th style={{ width: "46%" }}>Subject &amp; Body Preview</th>
+                      </tr>
+                    </thead>
+                    <tbody className="font-mono text-xs">
+                      {filteredSamples.map((row: any) => {
+                        const isSpam = String(row.label).toLowerCase() === "spam" || row.label === 1;
+                        const isDup = row.is_duplicate === true || row.is_duplicate === 1;
+                        const isExpanded = expandedEmailId === row.id;
+
+                        return (
+                          <tr key={row.id} className={isExpanded ? "bg-[#F9F9F9]" : ""}>
+                            <td className="font-bold text-[#111111]">{row.id}</td>
+                            <td>
+                              <span
+                                className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                                  isSpam
+                                    ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
+                                    : "border-[#444444] bg-[#F7F7F7] text-[#111111]"
+                                }`}
+                              >
+                                {isSpam ? "SPAM" : "HAM"}
+                              </span>
+                            </td>
+                            <td className="text-[11px] text-[#666666]">
+                              {row.timestamp ? String(row.timestamp).slice(0, 16) : "N/A"}
+                            </td>
+                            <td>
+                              {isDup ? (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded border border-[#111111] bg-[#EEEEEE] text-[#111111] font-bold">
+                                  BURST COPY
+                                </span>
+                              ) : (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded border border-[#CCCCCC] bg-[#FFFFFF] text-[#666666]">
+                                  ORIGINAL
+                                </span>
+                              )}
+                            </td>
+                            <td>
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="font-bold text-[#111111] truncate max-w-md font-sans">
+                                    {row.subject || (row.text ? row.text.slice(0, 60) : "No subject")}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => setExpandedEmailId(isExpanded ? null : row.id)}
+                                    className="text-[10px] text-[#111111] border border-[#CCCCCC] px-2 py-0.5 rounded hover:bg-[#EAEAEA] flex items-center gap-1 font-mono shrink-0"
+                                  >
+                                    <span>{isExpanded ? "Collapse" : "Inspect Body"}</span>
+                                    {isExpanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+                                  </button>
+                                </div>
+
+                                {isExpanded ? (
+                                  <div className="p-3 border border-[#CCCCCC] rounded bg-[#FFFFFF] space-y-2 mt-2">
+                                    <div className="flex items-center justify-between border-b border-[#EEEEEE] pb-1.5">
+                                      <span className="text-[10px] text-[#666666]">FULL MESSAGE TEXT:</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => copyToClipboard(row.text || row.body || "", row.id)}
+                                        className="text-[10px] text-[#111111] flex items-center gap-1 hover:underline"
+                                      >
+                                        {copiedId === row.id ? (
+                                          <>
+                                            <Check size={11} />
+                                            <span>Copied</span>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Copy size={11} />
+                                            <span>Copy Text</span>
+                                          </>
+                                        )}
+                                      </button>
+                                    </div>
+                                    <pre className="text-[11px] font-mono text-[#222222] whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                                      {row.text || row.body || "Empty body"}
+                                    </pre>
+                                  </div>
+                                ) : (
+                                  <div className="text-[11px] text-[#666666] truncate max-w-lg">
+                                    {row.body || row.text || "No preview"}
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
 
             {/* Warnings and Quality Audit */}
@@ -283,11 +540,13 @@ export default function DatasetLaboratoryPage() {
           </div>
         )}
 
-        {/* Section IV: Structural Audit of Eight Public Spam Benchmarks (Table IV) */}
+        {/* ============================================================== */}
+        {/* 4. STRUCTURAL AUDIT OF EIGHT PUBLIC BENCHMARKS (TABLE IV)       */}
+        {/* ============================================================== */}
         <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF] space-y-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] font-bold block">
                 Table IV from Manuscript &bull; Section IV Benchmark Analysis
               </span>
               <h2 className="text-base font-bold text-[#111111] mt-0.5">
