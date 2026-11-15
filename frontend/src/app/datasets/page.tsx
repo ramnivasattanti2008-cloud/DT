@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   RefreshCw,
   Sparkles,
+  Search,
 } from "lucide-react";
 
 export default function DatasetLaboratoryPage() {
@@ -23,6 +24,7 @@ export default function DatasetLaboratoryPage() {
   const [generating, setGenerating] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [benchmarkFilter, setBenchmarkFilter] = useState("");
 
   const loadData = () => {
     setLoading(true);
@@ -283,16 +285,29 @@ export default function DatasetLaboratoryPage() {
 
         {/* Section IV: Structural Audit of Eight Public Spam Benchmarks (Table IV) */}
         <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF] space-y-4">
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
-              Table IV from Manuscript &bull; Section IV Benchmark Analysis
-            </span>
-            <h2 className="text-base font-bold text-[#111111] mt-0.5">
-              Structural Audit of Eight Public Spam Benchmarks
-            </h2>
-            <p className="text-xs text-[#666666] mt-1">
-              File layout, class balance, and the primary validity traps documented across standard literature corpora.
-            </p>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
+                Table IV from Manuscript &bull; Section IV Benchmark Analysis
+              </span>
+              <h2 className="text-base font-bold text-[#111111] mt-0.5">
+                Structural Audit of Eight Public Spam Benchmarks
+              </h2>
+              <p className="text-xs text-[#666666] mt-1">
+                File layout, class balance, and the primary validity traps documented across standard literature corpora.
+              </p>
+            </div>
+
+            <div className="relative w-full md:w-64">
+              <Search size={14} className="absolute left-2.5 top-2.5 text-[#888888]" />
+              <input
+                type="text"
+                value={benchmarkFilter}
+                onChange={(e) => setBenchmarkFilter(e.target.value)}
+                placeholder="Search corpora, traps, formats..."
+                className="w-full pl-8 pr-3 py-1.5 text-xs font-mono border border-[#CCCCCC] rounded bg-[#FAFAFA] text-[#111111] focus:border-[#111111] focus:bg-[#FFFFFF]"
+              />
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -307,62 +322,83 @@ export default function DatasetLaboratoryPage() {
                 </tr>
               </thead>
               <tbody className="text-xs font-mono">
-                <tr>
-                  <td className="font-bold text-[#111111]">UCI Spambase (1999) [17]</td>
-                  <td className="text-[11px] font-sans">57 numeric columns; no raw text</td>
-                  <td>Ham 2,788 (60.6%); spam 1,813 (39.4%)</td>
-                  <td>4,601</td>
-                  <td className="text-[11px] font-sans text-[#444444]">All ham from one engineer&apos;s inbox; raw-text tokenizers cannot run.</td>
-                </tr>
-                <tr>
-                  <td className="font-bold text-[#111111]">Ling-Spam (2000) [12]</td>
-                  <td className="text-[11px] font-sans">Four text variants (raw, lemm, stop, lemm+stop)</td>
-                  <td>Ham 2,412 (83.4%); spam 481 (16.6%)</td>
-                  <td>2,893</td>
-                  <td className="text-[11px] font-sans text-[#444444]">Ham from one linguistics mailing list; preprocessed version often unstated.</td>
-                </tr>
-                <tr>
-                  <td className="font-bold text-[#111111]">PU Sets (2000&ndash;2004) [12], [13]</td>
-                  <td className="text-[11px] font-sans">Words replaced by integer token IDs</td>
-                  <td>Spam 19.7% to 50.0%</td>
-                  <td>1,099&ndash;4,139</td>
-                  <td className="text-[11px] font-sans text-[#444444]">Integer codes remove spelling tricks, HTML tags, and word stems; deep models fail.</td>
-                </tr>
-                <tr>
-                  <td className="font-bold text-[#111111]">Apache SpamAssassin (2002&ndash;2006)</td>
-                  <td className="text-[11px] font-sans">Intact RFC-822 files with headers &amp; HTML</td>
-                  <td>Ham 4,150 (68.6%); spam 1,897 (31.4%)</td>
-                  <td>6,047</td>
-                  <td className="text-[11px] font-sans text-[#444444]">Many papers drop the 250 hard_ham files, pushing precision &gt;99% and hiding false alarms.</td>
-                </tr>
-                <tr>
-                  <td className="font-bold text-[#111111]">Enron-Spam (2006) [13]</td>
-                  <td className="text-[11px] font-sans">Plain text, 6 user directories (enron1&ndash;enron6)</td>
-                  <td>Ham 16,545 (49.1%); spam 17,171 (50.9%)</td>
-                  <td>33,716</td>
-                  <td className="text-[11px] font-sans text-[#444444]">Pooling enron1&ndash;enron6 before random splitting leaks employee names and terms.</td>
-                </tr>
-                <tr>
-                  <td className="font-bold text-[#111111]">NIST TREC (2005&ndash;2007) [11]</td>
-                  <td className="text-[11px] font-sans">Time-ordered RFC-822 streams</td>
-                  <td>Spam 57.3%, 66.6% per year</td>
-                  <td>92k / 38k / 75k</td>
-                  <td className="text-[11px] font-sans text-[#444444]">Shuffled k-fold leaks later spam waves into earlier folds; breaks chronological validity.</td>
-                </tr>
-                <tr>
-                  <td className="font-bold text-[#111111]">CEAS-2008 &amp; CSDMC-2010</td>
-                  <td className="text-[11px] font-sans">Full MIME/HTML bodies with SMTP lines</td>
-                  <td>Ham 19.4% &amp; 53.3%; spam 80.6% &amp; 46.7%</td>
-                  <td>141,935 &amp; 4,327</td>
-                  <td className="text-[11px] font-sans text-[#444444]">Subsets sampled without reporting seeds, decoding rules, or header strip logic.</td>
-                </tr>
-                <tr>
-                  <td className="font-bold text-[#111111]">Urdu CSV (2018&ndash;2024) [4]</td>
-                  <td className="text-[11px] font-sans">Web-harvested or translated CSV</td>
-                  <td>About 50.0% ham and 50.0% spam</td>
-                  <td>5,000</td>
-                  <td className="text-[11px] font-sans text-[#444444]">8% to 15% duplicate campaign copies; random split measures memorization.</td>
-                </tr>
+                {[
+                  {
+                    name: "UCI Spambase (1999) [17]",
+                    format: "57 numeric columns; no raw text",
+                    ratio: "Ham 2,788 (60.6%); spam 1,813 (39.4%)",
+                    n: "4,601",
+                    trap: "All ham from one engineer's inbox; raw-text tokenizers cannot run.",
+                  },
+                  {
+                    name: "Ling-Spam (2000) [12]",
+                    format: "Four text variants (raw, lemm, stop, lemm+stop)",
+                    ratio: "Ham 2,412 (83.4%); spam 481 (16.6%)",
+                    n: "2,893",
+                    trap: "Ham from one linguistics mailing list; preprocessed version often unstated.",
+                  },
+                  {
+                    name: "PU Sets (2000–2004) [12], [13]",
+                    format: "Words replaced by integer token IDs",
+                    ratio: "Spam 19.7% to 50.0%",
+                    n: "1,099–4,139",
+                    trap: "Integer codes remove spelling tricks, HTML tags, and word stems; deep models fail.",
+                  },
+                  {
+                    name: "Apache SpamAssassin (2002–2006)",
+                    format: "Intact RFC-822 files with headers & HTML",
+                    ratio: "Ham 4,150 (68.6%); spam 1,897 (31.4%)",
+                    n: "6,047",
+                    trap: "Many papers drop the 250 hard_ham files, pushing precision >99% and hiding false alarms.",
+                  },
+                  {
+                    name: "Enron-Spam (2006) [13]",
+                    format: "Plain text, 6 user directories (enron1–enron6)",
+                    ratio: "Ham 16,545 (49.1%); spam 17,171 (50.9%)",
+                    n: "33,716",
+                    trap: "Pooling enron1–enron6 before random splitting leaks employee names and terms.",
+                  },
+                  {
+                    name: "NIST TREC (2005–2007) [11]",
+                    format: "Time-ordered RFC-822 streams",
+                    ratio: "Spam 57.3%, 66.6% per year",
+                    n: "92k / 38k / 75k",
+                    trap: "Shuffled k-fold leaks later spam waves into earlier folds; breaks chronological validity.",
+                  },
+                  {
+                    name: "CEAS-2008 & CSDMC-2010",
+                    format: "Full MIME/HTML bodies with SMTP lines",
+                    ratio: "Ham 19.4% & 53.3%; spam 80.6% & 46.7%",
+                    n: "141,935 & 4,327",
+                    trap: "Subsets sampled without reporting seeds, decoding rules, or header strip logic.",
+                  },
+                  {
+                    name: "Urdu CSV (2018–2024) [4]",
+                    format: "Web-harvested or translated CSV",
+                    ratio: "About 50.0% ham and 50.0% spam",
+                    n: "5,000",
+                    trap: "8% to 15% duplicate campaign copies; random split measures memorization.",
+                  },
+                ]
+                  .filter((item) => {
+                    if (!benchmarkFilter.trim()) return true;
+                    const q = benchmarkFilter.toLowerCase();
+                    return (
+                      item.name.toLowerCase().includes(q) ||
+                      item.format.toLowerCase().includes(q) ||
+                      item.ratio.toLowerCase().includes(q) ||
+                      item.trap.toLowerCase().includes(q)
+                    );
+                  })
+                  .map((b) => (
+                    <tr key={b.name}>
+                      <td className="font-bold text-[#111111]">{b.name}</td>
+                      <td className="text-[11px] font-sans">{b.format}</td>
+                      <td>{b.ratio}</td>
+                      <td>{b.n}</td>
+                      <td className="text-[11px] font-sans text-[#444444]">{b.trap}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
