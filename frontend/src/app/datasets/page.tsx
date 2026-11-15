@@ -228,7 +228,7 @@ export default function DatasetLaboratoryPage() {
                 }
                 subtitle={
                   selectedDataset.min_timestamp
-                    ? `${new Date(selectedDataset.min_timestamp).toLocaleDateString()} to ${new Date(selectedDataset.max_timestamp || "").toLocaleDateString()}`
+                    ? `${selectedDataset.min_timestamp.slice(0, 10)} to ${(selectedDataset.max_timestamp || "").slice(0, 10)}`
                     : "Timestamps unavailable"
                 }
               />

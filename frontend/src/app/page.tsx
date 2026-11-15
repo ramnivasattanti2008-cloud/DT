@@ -20,6 +20,9 @@ import {
   CheckCircle2,
   AlertTriangle,
   RotateCcw,
+  Sliders,
+  ChevronRight,
+  ShieldAlert,
 } from "lucide-react";
 
 export default function OverviewPage() {
@@ -35,6 +38,10 @@ export default function OverviewPage() {
   );
   const [classifying, setClassifying] = useState(false);
   const [quickResult, setQuickResult] = useState<any>(null);
+  const [selectedModelKey, setSelectedModelKey] = useState("multinomial_nb");
+
+  // Interactive Ablation Stepper state (Table VIII)
+  const [activeAblationStage, setActiveAblationStage] = useState(4); // Default to Stage B
 
   useEffect(() => {
     Promise.all([
@@ -73,10 +80,68 @@ export default function OverviewPage() {
   const protoB = experiments.find((e) => e.protocol.includes("Protocol B"));
   const protoA = experiments.find((e) => e.protocol.includes("Protocol A"));
 
-  // Primary model from quick result (default to Naive Bayes or Logistic Regression)
-  const primaryPred = quickResult?.predictions?.find(
-    (p: any) => p.model_key === "multinomial_nb"
-  ) || quickResult?.predictions?.[0];
+  // Find active prediction based on selected model
+  const activePred =
+    quickResult?.predictions?.find((p: any) => p.model_key === selectedModelKey) ||
+    quickResult?.predictions?.[0];
+
+  const ABLATION_STEPS = [
+    {
+      id: "A0",
+      title: "Stage A0: Flawed Baseline",
+      tag: "UNSAFE",
+      fpr: "4.31%",
+      tcr: "0.16 (<1.0)",
+      f1: "96.87% (Inflated)",
+      cari: "0.6197",
+      verdict: "Severe Failure: 31 legitimate test emails dropped; 480 duplicate bursts unpurged.",
+      changes: "Global pre-split TF-IDF fitting, duplicate retention, shuffled 80:20 split, fixed 0.50 cutoff.",
+    },
+    {
+      id: "A1",
+      title: "Stage A1: +Pre-Split Dedup",
+      tag: "AUDITED",
+      fpr: "4.99%",
+      tcr: "0.13 (<1.0)",
+      f1: "96.14%",
+      cari: "0.6708",
+      verdict: "Duplicate memorization eliminated: Purged 480 burst copies via Shingle-Jaccard (s=3, t=0.85).",
+      changes: "Clean N=5,520 corpus. Shuffled split and global vectorizer still remain.",
+    },
+    {
+      id: "A2",
+      title: "Stage A2: +Train-Only Fit",
+      tag: "LEAK-FREE",
+      fpr: "5.28%",
+      tcr: "0.12 (<1.0)",
+      f1: "93.26%",
+      cari: "0.7090",
+      verdict: "Vocabulary leakage eliminated: TF-IDF and Chi-sq feature selection fitted strictly on training partition.",
+      changes: "Prevents test vocabulary weights from inflating recall. Shuffled split and 0.50 cutoff remain.",
+    },
+    {
+      id: "A3",
+      title: "Stage A3: +Chronological Split",
+      tag: "TEMPORAL",
+      fpr: "4.55%",
+      tcr: "0.14 (<1.0)",
+      f1: "91.63%",
+      cari: "0.7705",
+      verdict: "Temporal drift exposed: Strict 80:20 chronological boundary reveals Q4 cloud phishing rotation.",
+      changes: "Earlier 80% train, final 20% test. Naive cutoff 0.50 still causes excessive false alarms.",
+    },
+    {
+      id: "B",
+      title: "Stage B: Full SERC + Calibrated Cutoff",
+      tag: "CERTIFIED SAFE",
+      fpr: "0.29%",
+      tcr: "1.62 (>1.0)",
+      f1: "91.84% (Honest)",
+      cari: "0.9130",
+      verdict: "Gateway Utility Restored: False alarms slashed from 31 down to 2; TCR rises from 0.16 to 1.62 (>1.0).",
+      changes: "Tuned cutoff tau* = 0.9196 on chronological validation partition targeting FPR <= 0.35%.",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-[#FFFFFF]">
@@ -124,7 +189,7 @@ export default function OverviewPage() {
 
       <div className="p-8 max-w-7xl mx-auto space-y-8">
         {/* ============================================================== */}
-        {/* INTERACTIVE 1-SECOND EMAIL TESTER (SIMPLE & CLEAN)             */}
+        {/* INTERACTIVE 1-SECOND EMAIL TESTER WITH DUAL-THRESHOLD GAUGE    */}
         {/* ============================================================== */}
         <div className="border border-[#111111] rounded p-6 bg-[#FAFAFA] space-y-4 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[#E5E5E5] pb-3">
@@ -141,8 +206,28 @@ export default function OverviewPage() {
                 Real-Time Spam &amp; False-Alarm Diagnostic Engine
               </h2>
             </div>
-            <div className="text-xs text-[#666666] font-mono">
-              Tested simultaneously against all 4 calibrated classifiers
+
+            {/* Model Architecture Selector Tabs */}
+            <div className="flex items-center gap-1 bg-[#FFFFFF] p-1 border border-[#CCCCCC] rounded">
+              {[
+                { key: "multinomial_nb", label: "Naive Bayes" },
+                { key: "linear_svm", label: "Linear SVM" },
+                { key: "random_forest", label: "Random Forest" },
+                { key: "logistic_regression", label: "Logistic Reg" },
+              ].map((m) => (
+                <button
+                  key={m.key}
+                  type="button"
+                  onClick={() => setSelectedModelKey(m.key)}
+                  className={`px-2 py-1 text-[11px] font-mono rounded transition ${
+                    selectedModelKey === m.key
+                      ? "bg-[#111111] text-[#FFFFFF] font-bold"
+                      : "text-[#555555] hover:text-[#000000] hover:bg-[#F0F0F0]"
+                  }`}
+                >
+                  {m.label}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -170,7 +255,7 @@ export default function OverviewPage() {
                   <span className="text-[10px] font-mono opacity-80">Safe Mail</span>
                 </div>
                 <div className="text-[10px] mt-0.5 opacity-75 truncate">
-                  Tests false alarm prevention at calibrated &tau;*
+                  Demonstrates false alarm prevention via calibrated &tau;*
                 </div>
               </button>
 
@@ -245,12 +330,16 @@ export default function OverviewPage() {
             </div>
           </div>
 
-          {/* Live Result Display */}
-          {primaryPred && (() => {
-            const isSpam = primaryPred.predicted_label === "spam";
-            const modelName = primaryPred.display_name || primaryPred.model_name || "Multinomial Naive Bayes";
+          {/* Live Result Display with Visual Dual-Threshold Gauge */}
+          {activePred && (() => {
+            const isSpam = activePred.predicted_label === "spam";
+            const modelName = activePred.display_name || activePred.model_name || "Multinomial Naive Bayes";
+            const prob = activePred.predicted_probability;
+            const cutoff = activePred.decision_threshold || 0.90;
+            const isProtectedFP = prob >= 0.50 && !isSpam;
+
             return (
-              <div className="p-4 border border-[#CCCCCC] rounded bg-[#FFFFFF] space-y-3">
+              <div className="p-4 border border-[#CCCCCC] rounded bg-[#FFFFFF] space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#EEEEEE] pb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono text-[#666666]">Verdict:</span>
@@ -263,64 +352,179 @@ export default function OverviewPage() {
                     >
                       {isSpam ? "SPAM (BLOCKED)" : "LEGITIMATE (HAM - ALLOWED)"}
                     </span>
+                    {isProtectedFP && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-[#111111] bg-[#FFFFFF] text-[#111111] font-bold">
+                        ⭐ FALSE POSITIVE PREVENTED
+                      </span>
+                    )}
                   </div>
                   <div className="text-xs font-mono text-[#666666]">
-                    Evaluator: <strong>{modelName}</strong>
+                    Active Evaluator: <strong>{modelName}</strong>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+                {/* Visual Dual-Threshold Zone Bar */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-[11px] font-mono text-[#666666]">
+                    <span>0.00 (Pure Ham)</span>
+                    <span className="text-[#111111] font-bold">Naive Cutoff: 0.50</span>
+                    <span className="text-[#111111] font-bold">SERC Cutoff (&tau;*): {cutoff.toFixed(2)}</span>
+                    <span>1.00 (Definite Spam)</span>
+                  </div>
+
+                  <div className="relative w-full h-5 bg-[#EEEEEE] rounded overflow-hidden flex border border-[#CCCCCC]">
+                    {/* Safe Zone */}
+                    <div style={{ width: "50%" }} className="bg-[#EAEAEA] flex items-center justify-center text-[9px] font-mono text-[#666666]">
+                      Safe Delivery Zone (&lt;0.50)
+                    </div>
+                    {/* Protected Zone */}
+                    <div
+                      style={{ width: `${Math.max(5, (cutoff - 0.50) * 100)}%` }}
+                      className="bg-[#D4D4D4] border-x border-[#AAAAAA] flex items-center justify-center text-[9px] font-mono font-bold text-[#111111]"
+                    >
+                      Protected False-Alarm Zone
+                    </div>
+                    {/* Spam Quarantined Zone */}
+                    <div
+                      style={{ width: `${(1.0 - cutoff) * 100}%` }}
+                      className="bg-[#111111] flex items-center justify-center text-[9px] font-mono text-[#FFFFFF]"
+                    >
+                      Spam Quarantined
+                    </div>
+
+                    {/* Exact Probability Marker Pin */}
+                    <div
+                      className="absolute top-0 bottom-0 w-1 bg-[#000000] border-x border-[#FFFFFF] z-10 transition-all"
+                      style={{ left: `${Math.min(99, Math.max(1, prob * 100))}%` }}
+                      title={`Spam Probability: ${(prob * 100).toFixed(1)}%`}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#666666] pt-0.5">
+                    <span>
+                      Current Message Risk: <strong className="text-[#111111]">{(prob * 100).toFixed(1)}%</strong>
+                    </span>
+                    <span>
+                      {prob < 0.50
+                        ? "Message falls safely in clean ham zone."
+                        : isProtectedFP
+                        ? "Protocol A would block this valid mail! Protocol B delivers it safely."
+                        : "Message exceeds calibrated threshold and is quarantined."}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono pt-1">
                   <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
                     <div className="text-[10px] text-[#666666]">ESTIMATED SPAM RISK</div>
                     <div className="text-base font-bold text-[#111111] mt-0.5">
-                      {(primaryPred.predicted_probability * 100).toFixed(1)}%
+                      {(prob * 100).toFixed(1)}%
                     </div>
-                    <div className="w-full bg-[#E5E5E5] h-1.5 rounded-full mt-1.5 overflow-hidden">
-                      <div
-                        className="bg-[#111111] h-full"
-                        style={{
-                          width: `${Math.min(100, Math.max(2, primaryPred.predicted_probability * 100))}%`,
-                        }}
-                      />
+                    <div className="text-[10px] text-[#666666] mt-0.5">
+                      Model confidence score
                     </div>
                   </div>
 
                   <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
-                    <div className="text-[10px] text-[#666666]">SERC CALIBRATED CUTOFF (&tau;*)</div>
+                    <div className="text-[10px] text-[#666666]">CALIBRATED THRESHOLD (&tau;*)</div>
                     <div className="text-base font-bold text-[#111111] mt-0.5">
-                      {primaryPred.decision_threshold?.toFixed(2) || "0.90"}
+                      {cutoff.toFixed(4)}
                     </div>
                     <div className="text-[10px] text-[#666666] mt-0.5">
-                      Tuned at &lambda;=99 (FPR &lt; 0.35%)
+                      Tuned at &lambda;=99 (Target FPR &le; 0.35%)
                     </div>
                   </div>
 
                   <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
-                    <div className="text-[10px] text-[#666666]">DEFAULT VS. CALIBRATED</div>
+                    <div className="text-[10px] text-[#666666]">DIAGNOSTIC STATUS</div>
                     <div className="text-xs font-bold text-[#111111] mt-0.5">
-                      {primaryPred.predicted_probability > 0.5 && !isSpam
-                        ? "Protected from False Alarm!"
+                      {isProtectedFP
+                        ? "Protected False Alarm"
                         : isSpam
-                        ? "Safely Quarantined"
-                        : "Passed Cleanly"}
+                        ? "Quarantined Spam"
+                        : "Delivered Ham"}
                     </div>
-                    <div className="text-[10px] text-[#666666] mt-0.5">
-                      Avoids dropping valid invoices
+                    <div className="text-[10px] text-[#666666] mt-0.5 truncate">
+                      {activePred.diagnostic || "Evaluated under Protocol B"}
                     </div>
                   </div>
                 </div>
+              </div>
+            );
+          })()}
+        </div>
 
-                <div className="text-[11px] text-[#666666] leading-relaxed flex items-center justify-between pt-1">
-                  <span>
-                    Tip: A standard naive 0.50 cutoff quarantines 3.3% to 4.3% of valid messages. Protocol B threshold tuning drops false alarms down to 0.15%.
+        {/* ============================================================== */}
+        {/* INTERACTIVE FIVE-STAGE ABLATION STEPPER (TABLE VIII LIVE)      */}
+        {/* ============================================================== */}
+        <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF] space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#EEEEEE] pb-3">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] font-bold block">
+                Interactive Ablation Matrix &bull; Table VIII from Manuscript
+              </span>
+              <h2 className="text-sm font-bold text-[#111111] mt-0.5">
+                The Cost of Evaluation Shortcuts: Stepwise Flaw Removal ($A_0 \to A_1 \to A_2 \to A_3 \to B$)
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-[#666666]">
+              Multinomial Naive Bayes (&alpha; = 0.15)
+            </span>
+          </div>
+
+          {/* Stepper Tabs */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            {ABLATION_STEPS.map((step, idx) => (
+              <button
+                key={step.id}
+                type="button"
+                onClick={() => setActiveAblationStage(idx)}
+                className={`p-3 rounded border text-left text-xs transition-colors flex flex-col justify-between ${
+                  activeAblationStage === idx
+                    ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
+                    : "border-[#E5E5E5] bg-[#FAFAFA] text-[#111111] hover:bg-[#F0F0F0]"
+                }`}
+              >
+                <div>
+                  <div className="font-mono font-bold text-[11px] flex items-center justify-between">
+                    <span>{step.id}</span>
+                    <span className={`text-[9px] px-1 py-0.2 rounded border ${
+                      activeAblationStage === idx
+                        ? "border-[#555555] bg-[#222222] text-[#FFFFFF]"
+                        : "border-[#CCCCCC] bg-[#FFFFFF] text-[#666666]"
+                    }`}>
+                      {step.tag}
+                    </span>
+                  </div>
+                  <div className={`text-[10px] font-mono mt-1 ${activeAblationStage === idx ? "text-[#CCCCCC]" : "text-[#666666]"}`}>
+                    FPR: {step.fpr}
+                  </div>
+                </div>
+                <div className={`text-[10px] font-mono font-bold mt-2 ${activeAblationStage === idx ? "text-[#FFFFFF]" : "text-[#111111]"}`}>
+                  TCR: {step.tcr}
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Active Step Narrative Card */}
+          {(() => {
+            const cur = ABLATION_STEPS[activeAblationStage];
+            return (
+              <div className="p-4 border border-[#CCCCCC] rounded bg-[#FAFAFA] space-y-2">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold font-mono text-[#111111] uppercase">
+                    {cur.title}
+                  </h3>
+                  <span className="text-xs font-mono text-[#666666]">
+                    CARI Score: <strong>{cur.cari}</strong> &bull; F1: <strong>{cur.f1}</strong>
                   </span>
-                  <Link
-                    href="/classifier"
-                    className="font-bold text-[#111111] underline hover:text-[#555555] flex items-center gap-1 shrink-0 ml-2"
-                  >
-                    <span>Advanced Classifier</span>
-                    <ArrowRight size={12} />
-                  </Link>
+                </div>
+                <p className="text-xs text-[#333333] font-medium leading-relaxed">
+                  {cur.verdict}
+                </p>
+                <div className="text-[11px] text-[#666666] font-mono border-t border-[#E5E5E5] pt-2">
+                  <strong>Changes in this stage:</strong> {cur.changes}
                 </div>
               </div>
             );
@@ -476,7 +680,7 @@ export default function OverviewPage() {
               </div>
               <h3 className="text-sm font-bold text-[#111111]">Spam Classifier</h3>
               <p className="text-xs text-[#666666] leading-relaxed">
-                Test custom emails across all 4 machine learning models. Calibrate thresholds (&tau;*) to eliminate costly false alarms.
+                Test custom emails across all 4 machine learning models. Interactive decision threshold simulator with real-time slider.
               </p>
               <div className="text-[11px] font-mono text-[#111111] font-medium pt-1">
                 Open Classifier &rarr;

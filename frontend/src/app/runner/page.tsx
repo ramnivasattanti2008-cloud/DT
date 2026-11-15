@@ -45,12 +45,26 @@ export default function ExperimentRunnerPage() {
     }
   };
 
-  const handleLaunch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedDatasetId) {
+  const executeRun = async (override?: {
+    protocol?: string;
+    models?: string[];
+    targetFpr?: number;
+    costLambda?: number;
+    randomSeed?: number;
+    notes?: string;
+  }) => {
+    const dsId = selectedDatasetId || datasets[0]?.id;
+    if (!dsId) {
       setError("Please select a dataset.");
       return;
     }
+
+    const runProto = override?.protocol ?? protocol;
+    const runModels = override?.models ?? selectedModels;
+    const runFpr = override?.targetFpr ?? targetFpr;
+    const runLambda = override?.costLambda ?? costLambda;
+    const runSeed = override?.randomSeed ?? randomSeed;
+    const runNotes = override?.notes ?? notes;
 
     setRunning(true);
     setError(null);
@@ -58,13 +72,13 @@ export default function ExperimentRunnerPage() {
 
     try {
       const exp = await runExperiment({
-        dataset_id: selectedDatasetId,
-        protocol,
-        selected_models: selectedModels,
-        target_fpr: targetFpr,
-        cost_weight_lambda: costLambda,
-        random_seed: randomSeed,
-        notes: notes || undefined,
+        dataset_id: dsId,
+        protocol: runProto,
+        selected_models: runModels,
+        target_fpr: runFpr,
+        cost_weight_lambda: runLambda,
+        random_seed: runSeed,
+        notes: runNotes || undefined,
       });
 
       setCompletedExperimentId(exp.id);
@@ -73,6 +87,11 @@ export default function ExperimentRunnerPage() {
       setError(err.message || "Failed to execute experiment.");
       setRunning(false);
     }
+  };
+
+  const handleLaunch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    executeRun();
   };
 
   return (
@@ -110,11 +129,14 @@ export default function ExperimentRunnerPage() {
                 setCostLambda(99.0);
                 setRandomSeed(42);
                 setNotes("1-Click Protocol B Run (SERC-Compliant)");
-                // Trigger launch
-                setTimeout(() => {
-                  const form = document.querySelector("form");
-                  if (form) form.requestSubmit();
-                }, 50);
+                executeRun({
+                  protocol: "Protocol B",
+                  models: ["multinomial_nb", "linear_svm", "random_forest", "logistic_regression"],
+                  targetFpr: 0.0035,
+                  costLambda: 99.0,
+                  randomSeed: 42,
+                  notes: "1-Click Protocol B Run (SERC-Compliant)",
+                });
               }}
               className="p-3 border border-[#111111] bg-[#111111] text-[#FFFFFF] rounded text-left hover:bg-[#333333] transition disabled:opacity-50 group flex flex-col justify-between"
             >
@@ -142,10 +164,14 @@ export default function ExperimentRunnerPage() {
                 setCostLambda(99.0);
                 setRandomSeed(42);
                 setNotes("1-Click Protocol A Run (Flawed Baseline)");
-                setTimeout(() => {
-                  const form = document.querySelector("form");
-                  if (form) form.requestSubmit();
-                }, 50);
+                executeRun({
+                  protocol: "Protocol A",
+                  models: ["multinomial_nb", "linear_svm", "random_forest", "logistic_regression"],
+                  targetFpr: 0.05,
+                  costLambda: 99.0,
+                  randomSeed: 42,
+                  notes: "1-Click Protocol A Run (Flawed Baseline)",
+                });
               }}
               className="p-3 border border-[#CCCCCC] bg-[#FFFFFF] text-[#111111] rounded text-left hover:bg-[#F0F0F0] transition disabled:opacity-50 group flex flex-col justify-between"
             >

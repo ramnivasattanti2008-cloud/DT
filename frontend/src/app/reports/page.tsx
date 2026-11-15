@@ -127,7 +127,7 @@ function ReportsContent() {
             >
               {experiments.map((e) => (
                 <option key={e.id} value={e.id}>
-                  {e.protocol} &bull; {e.id} ({new Date(e.created_at).toLocaleDateString()})
+                  {e.protocol} &bull; {e.id} ({e.created_at ? e.created_at.slice(0, 10) : ""})
                 </option>
               ))}
             </select>
@@ -163,7 +163,7 @@ function ReportsContent() {
               <span>&bull;</span>
               <span>Seed: {selectedExp.random_seed}</span>
               <span>&bull;</span>
-              <span>Date: {new Date(selectedExp.created_at).toLocaleString()}</span>
+              <span>Date: {selectedExp.created_at ? selectedExp.created_at.slice(0, 19).replace("T", " ") : "N/A"}</span>
             </div>
           </div>
 
@@ -235,8 +235,8 @@ function ReportsContent() {
                 </tr>
               </thead>
               <tbody className="font-mono text-xs">
-                {selectedExp.model_results?.map((m) => {
-                  const met = m.metrics;
+                {(selectedExp.model_results || []).map((m) => {
+                  const met = m.metrics || ({} as any);
                   return (
                     <tr key={m.model_key}>
                       <td className="font-bold font-sans text-xs text-[#111111]">{m.display_name}</td>

@@ -267,16 +267,17 @@ export default function ClassifierPage() {
                     </tr>
                   </thead>
                   <tbody className="font-mono text-xs">
-                    {result.predictions.map((p: any) => {
-                      const prob = p.predicted_probability;
+                    {(result?.predictions || []).map((p: any) => {
+                      const prob = p.predicted_probability ?? 0;
                       const isProtoASpam = prob >= 0.50;
                       const isProtoBSpam = p.predicted_label === "spam";
                       const isCustomSpam = prob >= interactiveCutoff;
                       const isPreventedFP = isProtoASpam && !isProtoBSpam;
+                      const threshold = p.decision_threshold ?? 0.50;
 
                       return (
                         <tr key={p.model_key} className={isPreventedFP ? "bg-[#F9F9F9]" : ""}>
-                          <td className="font-bold text-[#111111]">{p.display_name}</td>
+                          <td className="font-bold text-[#111111]">{p.display_name || p.model_name}</td>
                           <td>
                             <span className="font-bold">{prob.toFixed(4)}</span>
                           </td>
@@ -291,7 +292,7 @@ export default function ClassifierPage() {
                               {isProtoASpam ? "SPAM (>=0.50)" : "HAM (<0.50)"}
                             </span>
                           </td>
-                          <td>{p.decision_threshold.toFixed(4)}</td>
+                          <td>{threshold.toFixed(4)}</td>
                           <td>
                             <span
                               className={`px-1.5 py-0.5 rounded text-[10px] border ${
@@ -321,7 +322,7 @@ export default function ClassifierPage() {
                                 <span>FALSE POSITIVE PREVENTED BY CALIBRATION</span>
                               </span>
                             ) : (
-                              <span className="text-[#666666]">{p.diagnostic}</span>
+                              <span className="text-[#666666]">{p.diagnostic || "Evaluated"}</span>
                             )}
                           </td>
                         </tr>
@@ -335,19 +336,19 @@ export default function ClassifierPage() {
             {/* Matched Feature Contributions */}
             <div className="border border-[#E5E5E5] rounded p-5 bg-[#FAFAFA]">
               <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-[#111111] mb-2">
-                Active Vocabulary Tokens Matched ({result.matched_features.length})
+                Active Vocabulary Tokens Matched ({(result?.matched_features || []).length})
               </h3>
               <p className="text-xs text-[#666666] mb-3">
                 Token weights from the calibrated benchmark dictionary. Positive weights tilt probability toward spam; negative weights indicate legitimate corporate ham.
               </p>
 
-              {result.matched_features.length === 0 ? (
+              {(result?.matched_features || []).length === 0 ? (
                 <p className="text-xs text-[#888888] font-mono">
                   No vocabulary terms matched the benchmark dictionary. Classifier evaluates at baseline prior.
                 </p>
               ) : (
                 <div className="flex flex-wrap gap-1.5">
-                  {result.matched_features.map((f: any) => (
+                  {(result?.matched_features || []).map((f: any) => (
                     <span
                       key={f.token}
                       className={`text-xs font-mono px-2 py-1 rounded border flex items-center gap-1.5 ${

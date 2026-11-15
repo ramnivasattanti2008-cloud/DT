@@ -38,15 +38,16 @@ export default function HistoryPage() {
   };
 
   const filtered = experiments.filter((exp) => {
+    const q = (searchQuery || "").toLowerCase();
     const matchesSearch =
-      exp.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exp.protocol.toLowerCase().includes(searchQuery.toLowerCase());
+      (exp.id || "").toLowerCase().includes(q) ||
+      (exp.name || "").toLowerCase().includes(q) ||
+      (exp.protocol || "").toLowerCase().includes(q);
 
     const matchesProtocol =
       filterProtocol === "ALL" ||
-      (filterProtocol === "PROTOCOL_A" && exp.protocol.includes("Protocol A")) ||
-      (filterProtocol === "PROTOCOL_B" && exp.protocol.includes("Protocol B"));
+      (filterProtocol === "PROTOCOL_A" && (exp.protocol || "").includes("Protocol A")) ||
+      (filterProtocol === "PROTOCOL_B" && (exp.protocol || "").includes("Protocol B"));
 
     return matchesSearch && matchesProtocol;
   });
@@ -144,7 +145,7 @@ export default function HistoryPage() {
                       <td>{exp.best_tcr != null ? exp.best_tcr.toFixed(2) : "N/A"}</td>
                       <td>{exp.cari_score != null ? exp.cari_score.toFixed(4) : "N/A"}</td>
                       <td className="text-[11px] text-[#666666]">
-                        {new Date(exp.created_at).toLocaleDateString()}
+                        {exp.created_at ? exp.created_at.slice(0, 10) : "N/A"}
                       </td>
                       <td>
                         <div className="flex items-center gap-2">
