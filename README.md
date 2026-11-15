@@ -3,7 +3,10 @@
 > **A Scientific Platform for Auditing Split-Point Leakage, False-Alarm Costs, and Reporting Rigor in Machine Learning Mail Filters**
 
 Based on the research paper:  
-*“Evaluating Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers Through the SERC-RCS Rubric”* (Attanti, Shreya, & Sarwar).
+*“Inspecting Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric”*  
+**Authors:** R. Attanti, P. Shreya, and M. N. Sarwar  
+**Affiliation:** CSBS Department, School of Engineering, Jain University, Bengaluru, Karnataka 560069, India  
+**Corresponding Author:** M. N. Sarwar (e-mail: nadeem.sarwar@jainuniversity.ac.in)
 
 ---
 
@@ -19,8 +22,8 @@ The **SERC-RCS Research Lab** is an end-to-end, runnable research and operationa
 
 ### Live Public Deployment Link
 The application is deployed with a live public HTTPS domain:
-- **Public Web Application**: [https://contacting-ongoing-circuit-diverse.trycloudflare.com](https://contacting-ongoing-circuit-diverse.trycloudflare.com)
-- **Public API Documentation**: [https://contacting-ongoing-circuit-diverse.trycloudflare.com/api/docs](https://contacting-ongoing-circuit-diverse.trycloudflare.com/api/docs)
+- **Public Web Application**: [https://ram-survive-adds-princess.trycloudflare.com](https://ram-survive-adds-princess.trycloudflare.com)
+- **Public API Documentation**: [https://ram-survive-adds-princess.trycloudflare.com/api/docs](https://ram-survive-adds-princess.trycloudflare.com/api/docs)
 *(Accessible globally with full SSL encryption and universal origin proxying)*
 
 ---
@@ -168,4 +171,4 @@ The test suite in `backend/tests/` verifies all research guarantees:
 ## 8. License & Attribution
 
 Designed and engineered for scientific evaluation of email spam filtering literature. When citing this benchmark or platform, refer to the accompanying paper:
-*“Evaluating Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers Through the SERC-RCS Rubric”* (Attanti et al., 2026).
+*“Inspecting Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric”* (R. Attanti, P. Shreya, and M. N. Sarwar, School of Engineering, Jain University, 2026).

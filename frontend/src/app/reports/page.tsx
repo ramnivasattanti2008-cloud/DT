@@ -144,19 +144,23 @@ function ReportsContent() {
         <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF] space-y-4">
           <div className="border-b border-[#EEEEEE] pb-3">
             <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666]">
-              Section 1 &bull; Executive Summary
+              Section 1 &bull; Executive Summary &amp; Research Provenance
             </span>
             <h2 className="text-lg font-bold text-[#111111] mt-0.5">
               {selectedExp.name}
             </h2>
-            <div className="text-xs text-[#666666] font-mono mt-1 flex flex-wrap gap-4">
-              <span>Experiment ID: {selectedExp.id}</span>
+            <div className="text-xs text-[#333333] font-mono mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="font-bold text-[#111111]">Attanti, Shreya, &amp; Sarwar (2026)</span>
+              <span>&bull;</span>
+              <span className="text-[#666666]">Jain University School of Engineering (CSBS Dept)</span>
+              <span>&bull;</span>
+              <span>ID: {selectedExp.id}</span>
               <span>&bull;</span>
               <span>Protocol: {selectedExp.protocol}</span>
               <span>&bull;</span>
-              <span>Random Seed: {selectedExp.random_seed}</span>
+              <span>Seed: {selectedExp.random_seed}</span>
               <span>&bull;</span>
-              <span>Created: {new Date(selectedExp.created_at).toLocaleString()}</span>
+              <span>Date: {new Date(selectedExp.created_at).toLocaleString()}</span>
             </div>
           </div>
 
@@ -303,22 +307,25 @@ function ReportsContent() {
           </div>
         </div>
 
-        {/* Section 5: Threats to Validity and Scope Limits */}
+        {/* Section 5: Threats to Validity and Scope Limits (Section X of Manuscript) */}
         <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF] text-xs text-[#555555] space-y-2 leading-relaxed">
           <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
-            Section 5 &bull; Scope &amp; Threats to Validity (SERC Item 10)
+            Section 5 &bull; Scope &amp; Threats to Validity (SERC Item C10, Manuscript Section X)
           </span>
           <h3 className="text-sm font-bold text-[#111111]">
-            Methodological Constraints
+            Methodological Scope &amp; Four Scientific Limitations
           </h3>
           <p>
-            1. <strong>Corpus Horizon:</strong> While the 6,000-email benchmark incorporates 8.0% burst duplicates and fourth-quarter concept drift, live production enterprise queues experience continuous, non-stationary semantic rotation over years.
+            1. <strong>Size of the Graded Pool:</strong> Twenty studies were sufficient to corroborate the significant decline in reporting transparency after 2015 (Welch&apos;s p = 0.0023). Screening covered 642 records under PRISMA 2020, with two independent raters grading 200 item pairs (&kappa; = 0.8672).
           </p>
           <p>
-            2. <strong>False Alarm Costs:</strong> Threshold calibration depends on user-specified cost weights (&lambda;). In settings where false positives carry irreversible regulatory liability, enterprise administrators should test sliding chronological validation windows.
+            2. <strong>Published Text, Not Private Code:</strong> An RCS score of zero on C2 or C7 indicates the authors did not report verification evidence in the manuscript. RCS measures reporting transparency of the scientific literature; it does not independently inspect undocumented private code repositories.
           </p>
           <p>
-            3. <strong>Reproducibility Mandate:</strong> In compliance with SERC Item 9, all PRNG seeds, TF-IDF configurations, and exact formula implementations are permanently archived in the software repository.
+            3. <strong>Header and Body Feature Scope:</strong> The 10 SERC criteria specifically evaluate classifiers inspecting SMTP routing headers and message body text. Production relays running attachment sandboxing, optical character recognition (OCR) on images, or cryptographic SPF/DKIM/DMARC filters require complementary verification layers.
+          </p>
+          <p>
+            4. <strong>Archive Horizon and Live Traffic:</strong> The 6,000-message testbed corpus models executive email phrasing, retail invoice hard-ham overlap, 8.0% duplicate campaign bursts, and Q4 cloud credential drift. Because large ISP relays handle millions of daily messages with non-stationary drift, production deployments should combine chronological splits with continuous sliding-window evaluations.
           </p>
         </div>
       </div>

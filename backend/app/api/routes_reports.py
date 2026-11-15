@@ -211,15 +211,13 @@ def export_experiment_latex(experiment_id: str, db: Session = Depends(get_db)):
 % =========================================================================
 % BibTeX Citation Entry for Attanti, Shreya, & Sarwar (2026)
 % =========================================================================
-@article{{attanti2026evaluating,
-  author    = {{Attanti, S. and Shreya, K. and Sarwar, T.}},
-  title     = {{Evaluating Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers Through the SERC-RCS Rubric}},
-  journal   = {{Journal of Cybersecurity and Applied Machine Learning}},
+@article{{attanti2026inspecting,
+  author    = {{Attanti, R. and Shreya, P. and Sarwar, M. N.}},
+  title     = {{Inspecting Feature Leakage and False-Alarm Costs With Experimental Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric}},
+  journal   = {{School of Engineering, Jain University}},
+  institution = {{CSBS Department, School of Engineering, Jain University, Bengaluru, Karnataka 560069, India}},
   year      = {{2026}},
-  volume    = {{14}},
-  number    = {{2}},
-  pages     = {{112--138}},
-  doi       = {{10.1145/serc-rcs.2026.0142}}
+  note      = {{Corresponding author: M. N. Sarwar (nadeem.sarwar@jainuniversity.ac.in)}}
 }}
 """
     return Response(

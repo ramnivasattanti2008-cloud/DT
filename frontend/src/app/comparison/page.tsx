@@ -202,14 +202,17 @@ export default function ModelComparisonPage() {
           </div>
         </div>
 
-        {/* Table 6 Verification Table */}
+        {/* Table VII Verification Table */}
         <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF]">
           <div className="mb-4">
-            <h3 className="text-sm font-bold text-[#111111]">
-              Table 6 Verification: Protocol A (Flawed Baseline) vs. Protocol B (SERC-Compliant)
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
+              Table VII from Manuscript &bull; Section IX Controlled Python Benchmark
+            </span>
+            <h3 className="text-sm font-bold text-[#111111] mt-0.5">
+              Main Benchmark: Protocol A (Leaky, N_test=1,200) vs. Protocol B (SERC, N_test=1,104)
             </h3>
             <p className="text-xs text-[#666666]">
-              All counts from 6,000-email benchmark (N_test = 1,200 in Protocol A; N_test = 1,104 in Protocol B).
+              All counts evaluated on 6,000 dated emails across Multinomial NB (&alpha;=0.15), Platt Linear SVM (C=1.0), Random Forest (B=100, m_try=0.38), and L2 Logistic Regression (C=2.2).
             </p>
           </div>
 
@@ -278,13 +281,16 @@ export default function ModelComparisonPage() {
         </div>
 
         {/* 5-Stage Ablation Breakdown */}
-        <div className="border border-[#E5E5E5] rounded p-6 bg-[#FAFAFA]">
-          <div className="mb-4">
-            <h3 className="text-sm font-bold text-[#111111]">
-              Table 7 Verification: 5-Stage Stepwise Ablation (Multinomial Naive Bayes)
+        <div className="border border-[#E5E5E5] rounded p-6 bg-[#FAFAFA] space-y-4">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
+              Table VIII from Manuscript &bull; Section IX-B Five-Stage Ablation
+            </span>
+            <h3 className="text-sm font-bold text-[#111111] mt-0.5">
+              Stepwise Five-Stage Ablation Matrix (Multinomial Naive Bayes)
             </h3>
             <p className="text-xs text-[#666666]">
-              Tracing the exact transition from flawed baseline (A0) to leak-free SERC pipeline (B).
+              Tracing the exact transition from flawed baseline (A0) to leak-free SERC pipeline (B): A0 (unfiltered) &rarr; A1 (deduped) &rarr; A2 (train-only fit) &rarr; A3 (date-ordered) &rarr; B (SERC tuned).
             </p>
           </div>
 
@@ -316,6 +322,28 @@ export default function ModelComparisonPage() {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Section IX-B Three Core Takeaways */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs font-mono">
+            <div className="p-3 border border-[#E5E5E5] rounded bg-[#FFFFFF]">
+              <div className="text-[10px] font-bold text-[#111111]">1. REPORTED F1 IS INFLATED</div>
+              <p className="text-[11px] font-sans text-[#666666] mt-1">
+                At stage A0, F1 reaches 96.87% (NB). Relative to SERC stage B (91.84%), the leaky protocol overstates F1 by 2.63 to 5.03 percentage points.
+              </p>
+            </div>
+            <div className="p-3 border border-[#E5E5E5] rounded bg-[#FFFFFF]">
+              <div className="text-[10px] font-bold text-[#111111]">2. FIXED 0.50 CUTOFFS FAIL</div>
+              <p className="text-[11px] font-sans text-[#666666] mt-1">
+                Protocol A quarantines 24 to 31 valid messages among 720 legitimate test emails (FPR 3.33%&ndash;4.31%), dropping TCR down to 0.16&ndash;0.20 (&lt;1.0).
+              </p>
+            </div>
+            <div className="p-3 border border-[#E5E5E5] rounded bg-[#FFFFFF]">
+              <div className="text-[10px] font-bold text-[#111111]">3. CALIBRATION RESTORES UTILITY</div>
+              <p className="text-[11px] font-sans text-[#111111] mt-1">
+                Raising &tau;* in Stage B reduces blocked valid messages to 1&ndash;2, dropping FPR to 0.15%&ndash;0.29%, lifting TCR to 1.58&ndash;2.48, and lifting CARI to 0.8958&ndash;0.9130.
+              </p>
+            </div>
           </div>
         </div>
 

@@ -244,16 +244,62 @@ export default function SercEvaluatorPage() {
           </div>
         </div>
 
+        {/* PRISMA 2020 Literature Selection Protocol (Table II) */}
+        <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF] space-y-4">
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
+              Section II &bull; PRISMA 2020 Selection Protocol (Table II)
+            </span>
+            <h3 className="text-sm font-bold text-[#111111] mt-0.5">
+              Systematic Literature Search &amp; Screening Pipeline (1999&ndash;2024)
+            </h3>
+            <p className="text-xs text-[#666666] mt-1">
+              642 initial database records screened under PRISMA 2020 guidelines yielding 20 audited experimental studies.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs font-mono">
+            <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA] space-y-1">
+              <div className="text-[10px] font-bold text-[#111111]">1. DATABASE SEARCH</div>
+              <div className="text-sm font-bold text-[#111111]">642 Records</div>
+              <p className="text-[11px] font-sans text-[#666666]">
+                Scopus (210), Scholar (155), IEEE (165), Springer (112). 198 duplicate records removed &rarr; 444 unique records.
+              </p>
+            </div>
+            <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA] space-y-1">
+              <div className="text-[10px] font-bold text-[#111111]">2. ABSTRACT SCREENING</div>
+              <div className="text-sm font-bold text-[#111111]">358 Excluded</div>
+              <p className="text-[11px] font-sans text-[#666666]">
+                194 non-email spam (SMS, bots, reviews), 112 DNSBL/cryptography-only, 52 brief/non-English notes.
+              </p>
+            </div>
+            <div className="p-3 border border-[#E5E5E5] rounded bg-[#FAFAFA] space-y-1">
+              <div className="text-[10px] font-bold text-[#111111]">3. FULL-TEXT AUDIT</div>
+              <div className="text-sm font-bold text-[#111111]">63 Excluded</div>
+              <p className="text-[11px] font-sans text-[#666666]">
+                86 manuscripts read in full; 29 lacked confusion counts, 21 applied closed ISP logs, 13 were theory-only.
+              </p>
+            </div>
+            <div className="p-3 border border-[#111111] rounded bg-[#FAFAFA] space-y-1">
+              <div className="text-[10px] font-bold text-[#111111]">4. FINAL INCLUDED POOL</div>
+              <div className="text-sm font-bold text-[#111111]">23 Core Papers</div>
+              <p className="text-[11px] font-sans text-[#111111]">
+                3 review benchmarks (Dada &apos;19, J&aacute;&ntilde;ez-Martino &apos;23, Tusher &apos;24) + 20 graded experimental studies (S1&ndash;S20).
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Double-Blind Inter-Rater Reliability Panel */}
         {interRater && (
           <div className="border border-[#E5E5E5] rounded p-6 bg-[#FAFAFA]">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-sm font-bold text-[#111111] uppercase font-mono tracking-wider">
-                  Double-Blind Inter-Rater Reliability Verification
+                  Double-Blind Inter-Rater Reliability Verification (Section VII-C)
                 </h3>
                 <p className="text-xs text-[#666666]">
-                  Statistical audit across 20 primary studies &times; 10 criteria = 200 paired evaluations (Rater 1: R.A., Rater 2: S.P., Consensus: M.N.S.).
+                  Statistical audit across 20 primary studies &times; 10 criteria = 200 paired evaluations (Rater 1: R. Attanti, Rater 2: P. Shreya, Consensus: M. N. Sarwar).
                 </p>
               </div>
               <span className="px-2.5 py-1 text-xs font-mono border border-[#111111] bg-[#FFFFFF] rounded">
@@ -296,14 +342,17 @@ export default function SercEvaluatorPage() {
           </div>
         )}
 
-        {/* Table 5: 20 Primary Audited Studies Matrix */}
+        {/* Table VI: 20 Primary Audited Studies Matrix */}
         <div className="border border-[#E5E5E5] rounded p-6 bg-[#FFFFFF]">
           <div className="mb-4">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] block">
+              Table VI from Manuscript
+            </span>
             <h3 className="text-sm font-bold text-[#111111]">
-              Table 5: Longitudinal SERC Matrix (20 Audited Studies, 1999&ndash;2023)
+              Consensus SERC Grades Across 20 Spam Studies (1999&ndash;2023)
             </h3>
             <p className="text-xs text-[#666666]">
-              Consensus point scores (1.0 = Reported, 0.5 = Partial, 0.0 = Omitted) showing widespread post-2015 drops in cutoff tuning (C7) and drift testing (C8).
+              Consensus point scores (1.0 = Full, 0.5 = Partial, 0.0 = Omitted) showing steep post-2015 drops in cutoff tuning (C7: 78.6% &rarr; 0.0%) and explicit false-alarm reporting (C6: 100% &rarr; 20.8%).
             </p>
           </div>
 
