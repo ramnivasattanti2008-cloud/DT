@@ -1,0 +1,87 @@
+================================================================================
+FINAL RESEARCH PAPER SUBMISSION DETAILS & HOSTED LINKS
+================================================================================
+
+PROJECT / TOPIC TITLE:
+Inspecting Feature Leakage and False-Alarm Costs With Experimental 
+Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric
+
+AUTHORS & INSTITUTION:
+- R. Attanti (CSBS Department, School of Engineering, Jain University, Bengaluru)
+- P. Shreya (CSBS Department, School of Engineering, Jain University, Bengaluru)
+- Faculty Supervisor / Corresponding Author: 
+  Dr. M. Nadeem Sarwar (Associate Professor, CSBS Dept, Jain University)
+  Email: nadeem.sarwar@jainuniversity.ac.in
+
+SUBMISSION PACKAGE CONTENTS:
+1. Research Paper (Word Format):
+   Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.docx
+2. Research Paper (PDF Format):
+   Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.pdf
+3. Complete Source Code (ZIP Archive):
+   DT_Spam_Classifier_Source_Code.zip
+4. Submission Details & Reproduction Guide:
+   SUBMISSION_DETAILS_AND_HOSTED_LINKS.txt (This File)
+
+--------------------------------------------------------------------------------
+HOSTED LINKS & REPOSITORY ACCESS:
+--------------------------------------------------------------------------------
+1. Official GitHub Repository:
+   https://github.com/ramnivasattanti2008-cloud/DT
+   (Synchronized on main and master branches with full commit history)
+
+2. Live Interactive Cloud Platform (Hosted Web App):
+   https://statement-kissing-spoke-florists.trycloudflare.com
+   - Interactive Email Classifier with Decision Threshold Simulator (/classifier)
+   - Dataset Laboratory with Raw Email Corpus Explorer (/datasets)
+   - Empirical Safeguard Audit Matrix (/leakage)
+   - One-Click Benchmark Experiment Runner (/runner)
+   - Table VI, VII & VIII Multi-Model Comparison & Ablation Matrix (/comparison)
+   - 10-Item SERC Rubric & Live CARI Calculator (/serc)
+   - Full Research Reports with BibTeX / LaTeX Citation Export (/reports)
+
+--------------------------------------------------------------------------------
+SUMMARY OF SCIENTIFIC FINDINGS & CONTRIBUTIONS:
+--------------------------------------------------------------------------------
+1. Identification of Four Prevalent Evaluation Shortcuts:
+   - Pre-split TF-IDF and Chi-square feature leakage
+   - Unpurged near-duplicate spam burst memorization (8% to 15%)
+   - Look-ahead temporal leakage from randomly shuffled dated email streams
+   - Blind evaluation at symmetric 0.50 cutoff ignoring false-alarm costs
+
+2. New Evaluative Rubric (SERC, RCS, and CARI):
+   - SERC: 10-item checklist evaluating data hygiene, split design, and cutoffs.
+   - RCS: Reporting Completeness Score (0% to 100%).
+   - CARI: Cost-Adjusted Reproducibility Index balancing F1, FPR, and RCS.
+
+3. Systematic PRISMA 2020 Literature Audit:
+   - Screened 642 articles down to 20 representative experimental studies (1999-2023).
+   - High inter-rater reliability: Cohen's kappa = 0.8672, weighted kappa = 0.9071.
+   - Exposed a statistically significant decline in reporting completeness post-2015 
+     (RCS dropped from 77.14% down to 49.17%, p = 0.0023).
+
+4. Controlled 5-Stage Empirical Ablation (6,000 Dated Email Benchmark):
+   - Removing evaluation shortcuts slashes false positive rate from 3.33%-4.31% 
+     down to 0.15%-0.29% (over tenfold reduction).
+   - Eliminates 2.63 to 5.03 percentage points of artificial F1 optimism.
+   - Elevates enterprise Total Cost Ratio (TCR at lambda=99) from 0.16-0.20 (<1.0 failure) 
+     up to 1.58-2.48 (>1.0 viable utility), lifting CARI to 0.9130.
+
+--------------------------------------------------------------------------------
+LOCAL REPRODUCTION INSTRUCTIONS (IF RUNNING LOCALLY):
+--------------------------------------------------------------------------------
+Prerequisites: Python 3.10+, Node.js 18+
+
+1. Backend Service:
+   cd DT_Spam_Classifier_Source_Code/backend
+   pip install -r requirements.txt
+   python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+
+2. Frontend Web Application:
+   cd DT_Spam_Classifier_Source_Code/frontend
+   npm install
+   npm run build
+   npm run start -- -p 3000
+
+3. Access the interface at http://localhost:3000
+================================================================================
