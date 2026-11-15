@@ -7,21 +7,31 @@ Inspecting Feature Leakage and False-Alarm Costs With Experimental
 Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric
 
 AUTHORS & INSTITUTION:
-- R. Attanti (CSBS Department, School of Engineering, Jain University, Bengaluru)
-- P. Shreya (CSBS Department, School of Engineering, Jain University, Bengaluru)
+- Ramnivas Attanti (CSBS Department, School of Engineering, Jain University)
+- P. Shreya (CSBS Department, School of Engineering, Jain University)
 - Faculty Supervisor / Corresponding Author: 
   Dr. M. Nadeem Sarwar (Associate Professor, CSBS Dept, Jain University)
   Email: nadeem.sarwar@jainuniversity.ac.in
 
-SUBMISSION PACKAGE CONTENTS:
-1. Research Paper (Word Format):
-   Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.docx
-2. Research Paper (PDF Format):
-   Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.pdf
-3. Complete Source Code (ZIP Archive):
-   DT_Spam_Classifier_Source_Code.zip
-4. Submission Details & Reproduction Guide:
-   SUBMISSION_DETAILS_AND_HOSTED_LINKS.txt (This File)
+SUBMISSION PACKAGE CONTENTS (LOCATED IN THIS FOLDER):
+--------------------------------------------------------------------------------
+1. Research Papers (Design Thinking / Group Identifier: DT_007_046):
+   - DT_007_046.docx   (Word Document - Conference / University Submission Format)
+   - DT_007_046.pdf    (PDF Document - Publication Grade, Ready for Review)
+
+2. Research Papers (Full Topic Title Format):
+   - Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.docx
+   - Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.pdf
+
+3. Research Presentation Deck (IEEE Presentation):
+   - DT_PPT_.pptx      (PowerPoint Presentation with 8 Comprehensive Slides)
+   - DT_PPT_.pdf       (High-Resolution Vector PDF Export of Presentation)
+
+4. Complete Source Code Package:
+   - DT_Spam_Classifier_Source_Code.zip (Verified clean ZIP containing backend, frontend, benchmarks)
+
+5. Submission Manifest & Cloud Links:
+   - SUBMISSION_DETAILS_AND_HOSTED_LINKS.txt (This File)
 
 --------------------------------------------------------------------------------
 HOSTED LINKS & REPOSITORY ACCESS:
