@@ -31,7 +31,7 @@ export default function OverviewPage() {
   // Interactive Quick Tester state
   const [samples, setSamples] = useState<any[]>([]);
   const [testText, setTestText] = useState(
-    "Subject: Re: Q3 Invoice Reconciliation\n\nHi Sarah, attached is the revised billing reconciliation for the Q3 enterprise license. Please confirm receipt and let me know if you need PO details."
+    "Subject: monthly customer billing statement | Body: free webinar registration confirm your account notification preferences click href_link html_table discount offer schedule workshop committee"
   );
   const [classifying, setClassifying] = useState(false);
   const [quickResult, setQuickResult] = useState<any>(null);
@@ -156,21 +156,21 @@ export default function OverviewPage() {
                 type="button"
                 onClick={() =>
                   handleSelectSample(
-                    "Subject: Re: Q3 Invoice Reconciliation\n\nHi Sarah, attached is the revised billing reconciliation for the Q3 enterprise license. Please confirm receipt and let me know if you need PO details."
+                    "Subject: monthly customer billing statement | Body: free webinar registration confirm your account notification preferences click href_link html_table discount offer schedule workshop committee"
                   )
                 }
                 className={`p-2.5 rounded border text-left text-xs transition-colors ${
-                  testText.includes("Q3 Invoice Reconciliation")
+                  testText.includes("monthly customer billing statement")
                     ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
                     : "border-[#E5E5E5] bg-[#FFFFFF] text-[#111111] hover:bg-[#F0F0F0]"
                 }`}
               >
                 <div className="font-bold flex items-center justify-between">
-                  <span>1. Business Invoice (Hard Ham)</span>
+                  <span>1. Hard Ham (Billing Statement)</span>
                   <span className="text-[10px] font-mono opacity-80">Safe Mail</span>
                 </div>
                 <div className="text-[10px] mt-0.5 opacity-75 truncate">
-                  Tests if filter incorrectly blocks legitimate billing emails
+                  Tests false alarm prevention at calibrated &tau;*
                 </div>
               </button>
 
@@ -178,21 +178,21 @@ export default function OverviewPage() {
                 type="button"
                 onClick={() =>
                   handleSelectSample(
-                    "Subject: URGENT: Account Suspension Notice\n\nDear Customer, suspicious activity detected on your account. Click here immediately to verify your credentials within 24 hours or access will be revoked."
+                    "Subject: urgent winner guaranteed cash prize | Body: claim million dollars lottery beneficiary wire_transfer viagra cialis cheap pharmacy pills click below immediately"
                   )
                 }
                 className={`p-2.5 rounded border text-left text-xs transition-colors ${
-                  testText.includes("URGENT: Account Suspension Notice")
+                  testText.includes("urgent winner guaranteed cash prize")
                     ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
                     : "border-[#E5E5E5] bg-[#FFFFFF] text-[#111111] hover:bg-[#F0F0F0]"
                 }`}
               >
                 <div className="font-bold flex items-center justify-between">
-                  <span>2. Credential Phish (Spam)</span>
+                  <span>2. Lottery/Pharma (Spam)</span>
                   <span className="text-[10px] font-mono opacity-80">Malicious</span>
                 </div>
                 <div className="text-[10px] mt-0.5 opacity-75 truncate">
-                  Urgent psychological trigger impersonating security alerts
+                  High-probability commercial spam campaign
                 </div>
               </button>
 
@@ -200,21 +200,21 @@ export default function OverviewPage() {
                 type="button"
                 onClick={() =>
                   handleSelectSample(
-                    "Subject: Team Sync on Architecture Review\n\nHey team, let us meet tomorrow at 10 AM to review the system design and microservice boundaries. The meeting link is in the calendar invitation."
+                    "Subject: quarterly forecast pipeline review | Body: please find attached the spreadsheet allocation for engineering deployment and board agenda compliance"
                   )
                 }
                 className={`p-2.5 rounded border text-left text-xs transition-colors ${
-                  testText.includes("Team Sync on Architecture Review")
+                  testText.includes("quarterly forecast pipeline review")
                     ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
                     : "border-[#E5E5E5] bg-[#FFFFFF] text-[#111111] hover:bg-[#F0F0F0]"
                 }`}
               >
                 <div className="font-bold flex items-center justify-between">
-                  <span>3. Internal Meeting (Normal Ham)</span>
+                  <span>3. Internal Executive (Ham)</span>
                   <span className="text-[10px] font-mono opacity-80">Safe Mail</span>
                 </div>
                 <div className="text-[10px] mt-0.5 opacity-75 truncate">
-                  Standard internal correspondence without spam keywords
+                  Clean internal corporate message
                 </div>
               </button>
             </div>
@@ -246,81 +246,85 @@ export default function OverviewPage() {
           </div>
 
           {/* Live Result Display */}
-          {primaryPred && (
-            <div className="p-4 border border-[#CCCCCC] rounded bg-[#FFFFFF] space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#EEEEEE] pb-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-[#666666]">Verdict:</span>
-                  <span
-                    className={`px-2.5 py-1 text-xs font-mono font-bold rounded border ${
-                      primaryPred.is_spam
-                        ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
-                        : "border-[#444444] bg-[#F7F7F7] text-[#111111]"
-                    }`}
-                  >
-                    {primaryPred.is_spam ? "SPAM (BLOCKED)" : "LEGITIMATE (HAM - ALLOWED)"}
+          {primaryPred && (() => {
+            const isSpam = primaryPred.predicted_label === "spam";
+            const modelName = primaryPred.display_name || primaryPred.model_name || "Multinomial Naive Bayes";
+            return (
+              <div className="p-4 border border-[#CCCCCC] rounded bg-[#FFFFFF] space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#EEEEEE] pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-[#666666]">Verdict:</span>
+                    <span
+                      className={`px-2.5 py-1 text-xs font-mono font-bold rounded border ${
+                        isSpam
+                          ? "border-[#111111] bg-[#111111] text-[#FFFFFF]"
+                          : "border-[#444444] bg-[#F7F7F7] text-[#111111]"
+                      }`}
+                    >
+                      {isSpam ? "SPAM (BLOCKED)" : "LEGITIMATE (HAM - ALLOWED)"}
+                    </span>
+                  </div>
+                  <div className="text-xs font-mono text-[#666666]">
+                    Evaluator: <strong>{modelName}</strong>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+                  <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
+                    <div className="text-[10px] text-[#666666]">ESTIMATED SPAM RISK</div>
+                    <div className="text-base font-bold text-[#111111] mt-0.5">
+                      {(primaryPred.predicted_probability * 100).toFixed(1)}%
+                    </div>
+                    <div className="w-full bg-[#E5E5E5] h-1.5 rounded-full mt-1.5 overflow-hidden">
+                      <div
+                        className="bg-[#111111] h-full"
+                        style={{
+                          width: `${Math.min(100, Math.max(2, primaryPred.predicted_probability * 100))}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
+                    <div className="text-[10px] text-[#666666]">SERC CALIBRATED CUTOFF (&tau;*)</div>
+                    <div className="text-base font-bold text-[#111111] mt-0.5">
+                      {primaryPred.decision_threshold?.toFixed(2) || "0.90"}
+                    </div>
+                    <div className="text-[10px] text-[#666666] mt-0.5">
+                      Tuned at &lambda;=99 (FPR &lt; 0.35%)
+                    </div>
+                  </div>
+
+                  <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
+                    <div className="text-[10px] text-[#666666]">DEFAULT VS. CALIBRATED</div>
+                    <div className="text-xs font-bold text-[#111111] mt-0.5">
+                      {primaryPred.predicted_probability > 0.5 && !isSpam
+                        ? "Protected from False Alarm!"
+                        : isSpam
+                        ? "Safely Quarantined"
+                        : "Passed Cleanly"}
+                    </div>
+                    <div className="text-[10px] text-[#666666] mt-0.5">
+                      Avoids dropping valid invoices
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-[11px] text-[#666666] leading-relaxed flex items-center justify-between pt-1">
+                  <span>
+                    Tip: A standard naive 0.50 cutoff quarantines 3.3% to 4.3% of valid messages. Protocol B threshold tuning drops false alarms down to 0.15%.
                   </span>
-                </div>
-                <div className="text-xs font-mono text-[#666666]">
-                  Evaluator: <strong>{primaryPred.model_name}</strong>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
-                  <div className="text-[10px] text-[#666666]">ESTIMATED SPAM RISK</div>
-                  <div className="text-base font-bold text-[#111111] mt-0.5">
-                    {(primaryPred.predicted_probability * 100).toFixed(1)}%
-                  </div>
-                  <div className="w-full bg-[#E5E5E5] h-1.5 rounded-full mt-1.5 overflow-hidden">
-                    <div
-                      className="bg-[#111111] h-full"
-                      style={{
-                        width: `${Math.min(100, Math.max(2, primaryPred.predicted_probability * 100))}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
-                  <div className="text-[10px] text-[#666666]">SERC CALIBRATED CUTOFF (&tau;*)</div>
-                  <div className="text-base font-bold text-[#111111] mt-0.5">
-                    {primaryPred.decision_threshold.toFixed(2)}
-                  </div>
-                  <div className="text-[10px] text-[#666666] mt-0.5">
-                    Tuned at &lambda;=99 (FPR &lt; 0.35%)
-                  </div>
-                </div>
-
-                <div className="p-2.5 border border-[#E5E5E5] rounded bg-[#FAFAFA]">
-                  <div className="text-[10px] text-[#666666]">DEFAULT VS. CALIBRATED</div>
-                  <div className="text-xs font-bold text-[#111111] mt-0.5">
-                    {primaryPred.predicted_probability > 0.5 && !primaryPred.is_spam
-                      ? "Protected from False Alarm!"
-                      : primaryPred.is_spam
-                      ? "Safely Quarantined"
-                      : "Passed Cleanly"}
-                  </div>
-                  <div className="text-[10px] text-[#666666] mt-0.5">
-                    Avoids dropping valid invoices
-                  </div>
+                  <Link
+                    href="/classifier"
+                    className="font-bold text-[#111111] underline hover:text-[#555555] flex items-center gap-1 shrink-0 ml-2"
+                  >
+                    <span>Advanced Classifier</span>
+                    <ArrowRight size={12} />
+                  </Link>
                 </div>
               </div>
-
-              <div className="text-[11px] text-[#666666] leading-relaxed flex items-center justify-between pt-1">
-                <span>
-                  Tip: A standard naive 0.50 cutoff quarantines 3.3% to 4.3% of valid messages. Protocol B threshold tuning drops false alarms down to 0.15%.
-                </span>
-                <Link
-                  href="/classifier"
-                  className="font-bold text-[#111111] underline hover:text-[#555555] flex items-center gap-1 shrink-0 ml-2"
-                >
-                  <span>Advanced Classifier</span>
-                  <ArrowRight size={12} />
-                </Link>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* ============================================================== */}
