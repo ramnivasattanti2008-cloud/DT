@@ -19,36 +19,46 @@ SUBMISSION PACKAGE CONTENTS (LOCATED IN THIS FOLDER):
    - DT_007_046.docx   (Word Document - Conference / University Submission Format)
    - DT_007_046.pdf    (PDF Document - Publication Grade, Ready for Review)
 
-2. Research Papers (Full Topic Title Format):
-   - Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.docx
-   - Inspecting_Feature_Leakage_and_False_Alarm_Costs_Attanti_2026.pdf
+2. Research Presentation Deck (IEEE Presentation):
+   - SERC_RCS_Presentation.pptx   (PowerPoint Presentation with 8 Comprehensive Slides)
+   - SERC_RCS_Presentation.pdf    (High-Resolution Vector PDF Export of Presentation)
 
-3. Research Presentation Deck (IEEE Presentation):
-   - DT_PPT_.pptx      (PowerPoint Presentation with 8 Comprehensive Slides)
-   - DT_PPT_.pdf       (High-Resolution Vector PDF Export of Presentation)
-
-4. Complete Source Code Package:
+3. Complete Source Code Package:
    - DT_Spam_Classifier_Source_Code.zip (Verified clean ZIP containing backend, frontend, benchmarks)
 
-5. Submission Manifest & Cloud Links:
-   - SUBMISSION_DETAILS_AND_HOSTED_LINKS.txt (This File)
+4. Direct Working Model Links:
+   - WORKING_MODEL_LINKS.txt      (Direct access links & verification instructions)
+   - Open_Working_Model_Vercel.url (1-Click direct Windows browser shortcut)
+   - SUBMISSION_DETAILS_AND_HOSTED_LINKS.txt (This comprehensive manifest)
 
 --------------------------------------------------------------------------------
 HOSTED LINKS & REPOSITORY ACCESS:
 --------------------------------------------------------------------------------
-1. Official GitHub Repository:
+1. Primary Production Cloud Deployment (Vercel Edge - Fast Global Access):
+   https://frontend-gray-chi-43.vercel.app/
+
+   Direct Route Access:
+   - Live Email Classifier & Decision Threshold Simulator:
+     https://frontend-gray-chi-43.vercel.app/classifier
+   - Dataset Laboratory with Raw Corpus Email Explorer:
+     https://frontend-gray-chi-43.vercel.app/datasets
+   - Empirical Safeguard Audit Matrix:
+     https://frontend-gray-chi-43.vercel.app/leakage
+   - One-Click Benchmark Experiment Runner:
+     https://frontend-gray-chi-43.vercel.app/runner
+   - Table VI, VII & VIII Multi-Model Comparison & Ablation Matrix:
+     https://frontend-gray-chi-43.vercel.app/comparison
+   - 10-Item SERC Rubric & Live CARI Calculator:
+     https://frontend-gray-chi-43.vercel.app/serc
+   - Full Research Reports with BibTeX / LaTeX Citation Export:
+     https://frontend-gray-chi-43.vercel.app/reports
+
+2. Secondary Live Demo Tunnel (Direct from Local Runtime):
+   https://ram-survive-adds-princess.trycloudflare.com/
+
+3. Official GitHub Repository:
    https://github.com/ramnivasattanti2008-cloud/DT
    (Synchronized on main and master branches with full commit history)
-
-2. Live Interactive Cloud Platform (Hosted Web App):
-   https://statement-kissing-spoke-florists.trycloudflare.com
-   - Interactive Email Classifier with Decision Threshold Simulator (/classifier)
-   - Dataset Laboratory with Raw Email Corpus Explorer (/datasets)
-   - Empirical Safeguard Audit Matrix (/leakage)
-   - One-Click Benchmark Experiment Runner (/runner)
-   - Table VI, VII & VIII Multi-Model Comparison & Ablation Matrix (/comparison)
-   - 10-Item SERC Rubric & Live CARI Calculator (/serc)
-   - Full Research Reports with BibTeX / LaTeX Citation Export (/reports)
 
 --------------------------------------------------------------------------------
 SUMMARY OF SCIENTIFIC FINDINGS & CONTRIBUTIONS:

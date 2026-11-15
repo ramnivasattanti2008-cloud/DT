@@ -1,0 +1,71 @@
+================================================================================
+SERC-RCS EMAIL SPAM CLASSIFIER - LIVE WORKING MODEL LINKS
+================================================================================
+
+PROJECT TITLE:
+Inspecting Feature Leakage and False-Alarm Costs With Experimental 
+Reproducibility in Email Spam Classifiers, Through the SERC-RCS Rubric
+
+AUTHORS:
+- Ramnivas Attanti (School of Engineering, Jain University)
+- P. Shreya (School of Engineering, Jain University)
+- Faculty Supervisor: Dr. M. Nadeem Sarwar (Associate Professor, Jain University)
+
+================================================================================
+1. PRIMARY PRODUCTION CLOUD DEPLOYMENT (VERCEL EDGE - HIGH AVAILABILITY)
+================================================================================
+URL:
+https://frontend-gray-chi-43.vercel.app/
+
+* Status: ACTIVE, FAST GLOBAL CDN (Sub-50ms latency, zero cold starts)
+* Mobile & Desktop Responsive
+* Accessible worldwide without local tunnels or manual servers
+
+KEY INTERACTIVE MODULES ON THE LIVE DEPLOYMENT:
+- Homepage & System Architecture:
+  https://frontend-gray-chi-43.vercel.app/
+- Live Email Classifier & Decision Threshold Tuning:
+  https://frontend-gray-chi-43.vercel.app/classifier
+- Interactive Dataset Laboratory & Raw Corpus Explorer:
+  https://frontend-gray-chi-43.vercel.app/datasets
+- Empirical Feature Leakage & Shortcut Audit:
+  https://frontend-gray-chi-43.vercel.app/leakage
+- Benchmark Experiment Runner:
+  https://frontend-gray-chi-43.vercel.app/runner
+- Tables VI, VII & VIII Multi-Model Benchmark Comparison:
+  https://frontend-gray-chi-43.vercel.app/comparison
+- 10-Item SERC Checklist & Interactive CARI Calculator:
+  https://frontend-gray-chi-43.vercel.app/serc
+- Comprehensive Research Summary Reports:
+  https://frontend-gray-chi-43.vercel.app/reports
+
+================================================================================
+2. SECONDARY LIVE DEMO TUNNEL (HYBRID BACKEND)
+================================================================================
+URL:
+https://ram-survive-adds-princess.trycloudflare.com/
+
+* Live Cloudflare Tunnel streaming directly from the local development instance.
+
+================================================================================
+3. OFFICIAL OPEN-SOURCE GITHUB REPOSITORY
+================================================================================
+URL:
+https://github.com/ramnivasattanti2008-cloud/DT
+
+* Synchronized with full commit history across 'main' and 'master' branches.
+* Includes all frontend, backend, evaluation scripts, and reproducible benchmark seeds.
+
+================================================================================
+4. SUBMISSION PACKAGE FILES IN THIS FOLDER
+================================================================================
+- DT_007_046.pdf / DT_007_046.docx             -> Full Research Paper (Ready for review)
+- SERC_RCS_Presentation.pptx / .pdf            -> 8-Slide IEEE Research Presentation
+- DT_Spam_Classifier_Source_Code.zip           -> Complete Source Code Archive
+- Open_Working_Model_Vercel.url                -> 1-Click Desktop Shortcut to Live App
+- WORKING_MODEL_LINKS.txt                      -> This Link Reference Document
+- SUBMISSION_DETAILS_AND_HOSTED_LINKS.txt      -> Detailed Academic & Empirical Manifest
+
+================================================================================
+LAST UPDATED: 2026-11-15
+================================================================================
