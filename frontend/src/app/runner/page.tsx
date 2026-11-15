@@ -83,6 +83,88 @@ export default function ExperimentRunnerPage() {
       />
 
       <div className="p-8 max-w-4xl mx-auto space-y-8">
+        {/* Quick Launch Shortcuts */}
+        <div className="border border-[#111111] rounded p-5 bg-[#FAFAFA] space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-wider text-[#666666] font-bold block">
+                1-Click Quick Launch Presets
+              </span>
+              <h2 className="text-sm font-bold text-[#111111] mt-0.5">
+                Execute Benchmark Under Standard Manuscript Configurations
+              </h2>
+            </div>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-[#CCCCCC] bg-[#FFFFFF] text-[#444444]">
+              6,000 Dated Corpus
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <button
+              type="button"
+              disabled={running || datasets.length === 0}
+              onClick={() => {
+                setProtocol("Protocol B");
+                setSelectedModels(["multinomial_nb", "linear_svm", "random_forest", "logistic_regression"]);
+                setTargetFpr(0.0035);
+                setCostLambda(99.0);
+                setRandomSeed(42);
+                setNotes("1-Click Protocol B Run (SERC-Compliant)");
+                // Trigger launch
+                setTimeout(() => {
+                  const form = document.querySelector("form");
+                  if (form) form.requestSubmit();
+                }, 50);
+              }}
+              className="p-3 border border-[#111111] bg-[#111111] text-[#FFFFFF] rounded text-left hover:bg-[#333333] transition disabled:opacity-50 group flex flex-col justify-between"
+            >
+              <div>
+                <div className="text-xs font-bold font-mono flex items-center justify-between">
+                  <span>⚡ Quick Run: Protocol B (SERC)</span>
+                  <span className="text-[10px] bg-[#333333] px-1.5 py-0.5 rounded text-[#FFFFFF]">RECOMMENDED</span>
+                </div>
+                <p className="text-[11px] text-[#CCCCCC] mt-1 leading-snug">
+                  Deduped &bull; Chronological &bull; Train-only fit &bull; Calibrated &tau;* (FPR &lt; 0.35%)
+                </p>
+              </div>
+              <div className="text-[10px] font-mono text-[#E5E5E5] mt-2 group-hover:underline">
+                {running && protocol === "Protocol B" ? "Executing Benchmark..." : "Click to Launch Protocol B →"}
+              </div>
+            </button>
+
+            <button
+              type="button"
+              disabled={running || datasets.length === 0}
+              onClick={() => {
+                setProtocol("Protocol A");
+                setSelectedModels(["multinomial_nb", "linear_svm", "random_forest", "logistic_regression"]);
+                setTargetFpr(0.05);
+                setCostLambda(99.0);
+                setRandomSeed(42);
+                setNotes("1-Click Protocol A Run (Flawed Baseline)");
+                setTimeout(() => {
+                  const form = document.querySelector("form");
+                  if (form) form.requestSubmit();
+                }, 50);
+              }}
+              className="p-3 border border-[#CCCCCC] bg-[#FFFFFF] text-[#111111] rounded text-left hover:bg-[#F0F0F0] transition disabled:opacity-50 group flex flex-col justify-between"
+            >
+              <div>
+                <div className="text-xs font-bold font-mono flex items-center justify-between">
+                  <span>⚡ Quick Run: Protocol A (Flawed)</span>
+                  <span className="text-[10px] border border-[#CCCCCC] px-1.5 py-0.5 rounded text-[#666666]">BASELINE</span>
+                </div>
+                <p className="text-[11px] text-[#666666] mt-1 leading-snug">
+                  480 duplicate bursts &bull; Pre-split TF-IDF &bull; Shuffled &bull; Fixed 0.50 cutoff
+                </p>
+              </div>
+              <div className="text-[10px] font-mono text-[#111111] mt-2 group-hover:underline">
+                {running && protocol === "Protocol A" ? "Executing Benchmark..." : "Click to Launch Protocol A →"}
+              </div>
+            </button>
+          </div>
+        </div>
+
         {completedExperimentId && (
           <div className="border border-[#111111] rounded p-5 bg-[#FAFAFA] flex items-center justify-between">
             <div>

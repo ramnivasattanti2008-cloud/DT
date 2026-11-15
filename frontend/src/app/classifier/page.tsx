@@ -120,14 +120,26 @@ export default function ClassifierPage() {
                 Predictions run simultaneously on Naive Bayes, Linear SVM, Random Forest, and Logistic Regression.
               </span>
             </div>
-            <button
-              onClick={() => classifyText(inputText)}
-              disabled={loading || !inputText.trim()}
-              className="px-4 py-2 text-xs font-medium rounded bg-[#111111] text-[#FFFFFF] hover:bg-[#333333] transition-colors flex items-center gap-1.5 disabled:opacity-50"
-            >
-              <Send size={13} />
-              <span>{loading ? "Analyzing..." : "Classify Email"}</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setInputText("");
+                  setResult(null);
+                }}
+                className="px-3 py-2 text-xs font-mono font-medium rounded border border-[#CCCCCC] text-[#666666] hover:bg-[#F0F0F0] transition"
+              >
+                Clear
+              </button>
+              <button
+                onClick={() => classifyText(inputText)}
+                disabled={loading || !inputText.trim()}
+                className="px-4 py-2 text-xs font-medium rounded bg-[#111111] text-[#FFFFFF] hover:bg-[#333333] transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <Send size={13} />
+                <span>{loading ? "Analyzing..." : "Classify Email"}</span>
+              </button>
+            </div>
           </div>
 
           {/* Adversarial Robustness Toolbar */}
